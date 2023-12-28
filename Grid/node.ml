@@ -1,6 +1,5 @@
 
 type node =  {id : int*int ; connexions : node list}
-type directions = Up | Down | Left | Right
 
 (*Getters*)
 let get_id n = n.id
@@ -24,7 +23,7 @@ let sont_connecte n1 n2 =
     let rec loop l = 
     match l with 
     [] -> false
-    | p::suite -> if compare p n2 = 0 then true else loop suite
+    | p::suite -> if compare p.id n2.id = 0 then true else loop suite
     in loop n1.connexions
 
 let ajoute_connexion n m =
@@ -48,8 +47,10 @@ let ajoute_connexion n m =
                     (n,m)
 
 
-let supprime_connexions n ident =
+let supprime_connexion n ident =
     (* Ne fait rien si m n'est pas connecté à n *)
+    if not (sont_adjacent n.id ident) then failwith "Les deux noeuds ne sont pas adjacents"
+    else
     let rec loop l m = 
         match l with 
         [] -> []

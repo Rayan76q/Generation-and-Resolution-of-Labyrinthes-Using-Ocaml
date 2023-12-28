@@ -1,4 +1,5 @@
 #!/bin/bash
 ocamlopt -c node.mli
-ocamlopt -o test_grid node.ml grid.ml
-./test_grid
+ocamlopt -c grid.mli
+ocamlopt -o grid_test node.ml grid.ml grid_test.ml
+./grid_test
