@@ -48,9 +48,9 @@ let ajoute_mur g id1 id2 =
   (*Suprrime la connexion entre les cases de positions id1 et id2*)
   if (not (coords_correctes id1 g.length g.width) || not (coords_correctes id2 g.length g.width))  && Node.sont_adjacent id1 id2 then failwith "Coordonnées Invalides"
   else
-    let n1 =g.nodes.(fst id1).(snd id1)in
-    let n2 =g.nodes.(fst id2).(snd id2) in
-    let (m1 ,m2) = (Node.supprime_connexion n1 id2, Node.supprime_connexion n2 id1  )  in
+    let n1 = g.nodes.(fst id1).(snd id1)in
+    let n2 = g.nodes.(fst id2).(snd id2) in
+    let (m1 ,m2) = Node.supprime_connexion n1 n2  in
     g.nodes.(fst id1).(snd id1) <- m1 ;
     g.nodes.(fst id2).(snd id2) <- m2 ;
 
@@ -67,8 +67,8 @@ let supprime_mur g id1 id2 =
     (*Ajoute une connexion entre les cases de positions id1 et id2*)
     if not (coords_correctes id1 g.length g.width) || not (coords_correctes id2 g.length g.width) && Node.sont_adjacent id1 id2 then failwith "Coordonnées Invalides"
     else
-      let n1 =g.nodes.(fst id1).(snd id1)in
-      let n2 =g.nodes.(fst id2).(snd id2) in
+      let n1 = g.nodes.(fst id1).(snd id1)in
+      let n2 = g.nodes.(fst id2).(snd id2) in
       let (m1 ,m2) = Node.ajoute_connexion n1 n2  in
       g.nodes.(fst id1).(snd id1) <- m1 ;
       g.nodes.(fst id2).(snd id2) <- m2 ;
@@ -85,7 +85,7 @@ let get_voisins n m id1 =
 
 
 let sont_egaux g1 g2 = 
-  if compare (g1.length , g1.width) (g2.length , g2.width) <> 0 || not (List.equal (fun x y -> compare x y = 0) g1.edges g2.edges) then false
+  if compare (g1.length , g1.width) (g2.length , g2.width) <> 0 || not (List.equal (fun (a1, a2) (b1, b2) -> compare a1 b1 = 0 && compare a2 b2 = 0  || compare a1 b2 = 0 && compare a2 b1 = 0 ) g1.edges g2.edges) then false
   else
     let rec loopi i = 
       let rec loopj j = 

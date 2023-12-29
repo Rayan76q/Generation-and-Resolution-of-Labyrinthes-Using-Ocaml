@@ -13,7 +13,7 @@ val sont_connecte : node -> node -> bool
 val sont_adjacent : int*int -> int*int -> bool
 
 val ajoute_connexion : node->node->(node*node)
-val supprime_connexion : node -> int*int -> node
+val supprime_connexion : node -> node -> (node*node)
 
 val cree_noeud : int*int -> node list -> node
 

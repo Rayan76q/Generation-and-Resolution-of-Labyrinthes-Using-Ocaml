@@ -27,7 +27,7 @@ let sont_connecte n1 n2 =
     in loop n1.connexions
 
 let ajoute_connexion n m =
-    (*Fait du bidirectionelle*)
+    (*Fait du bidirectionel*)
     if List.length n.connexions = 4 ||  List.length m.connexions = 4 then (n , m) (*pas de voisins à ajouter*)
     else
         if not (sont_adjacent n.id m.id) then failwith "Les deux noeuds ne sont pas adjacents"
@@ -46,16 +46,19 @@ let ajoute_connexion n m =
                 else
                     (n,m)
 
-
-let supprime_connexion n ident =
+let supprime_connexion n m = 
+    (*Fait du bidirectionel*)
+    let bis n ident =
     (* Ne fait rien si m n'est pas connecté à n *)
     if not (sont_adjacent n.id ident) then failwith "Les deux noeuds ne sont pas adjacents"
     else
-    let rec loop l m = 
+        let rec loop l m = 
         match l with 
         [] -> []
         |p::s -> if p.id = m then s else p::(loop s m)
-    in {id = n.id ; connexions = (loop n.connexions ident)}
+        in {id = n.id ; connexions = (loop n.connexions ident)}
+    in 
+    (bis n m.id , bis m n.id)
 
 
 let cree_noeud i list_co = 
