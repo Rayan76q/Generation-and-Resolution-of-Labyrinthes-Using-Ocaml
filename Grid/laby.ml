@@ -48,7 +48,7 @@ let se_deplacer laby d =
     if not (Node.sont_connecte (get_nodes laby.grille).(fst position).(snd position) (get_nodes laby.grille).(fst next).(snd next)) ||
       not ((Node.sont_connecte (get_nodes laby.grille).(fst next).(snd next)) (get_nodes laby.grille).(fst position).(snd position) ) then failwith "Deplacement impossible: Il y a un mur entre les deux cases"
   else
-    {depart = s ; arrive = s ; position = next ; grille = laby.grille }
+    {depart = g.depart ; arrive = g.arrive ; position = next ; grille = laby.grille }
 
 
 let est_resolu laby = laby.position = laby.arrive
@@ -64,35 +64,57 @@ let set_depart laby id =
     if not (Grid.coords_correctes id (get_length (laby.grille)) (get_width (laby.grille))) then failwith "Coordonnées pour la case de départ incorrectes."
     else
         {depart = id ; arrive=laby.arrive ; position = depart ; grille = laby.grille}
-
+;;
 let set_arrive laby id =
     if not (Grid.coords_correctes id (get_length (laby.grille)) (get_width (laby.grille))) then failwith "Coordonnées pour la case d'arrivé incorrectes."
     else
         {depart = laby.depart ; arrive= id ; position = laby.position ; grille = laby.grille}
-
-
-
-let print_laby laby =
-  let n = Grid.get_length laby.grille in
-  let m = Grid.get_width laby.grille in
-  let nodes = Grid.get_nodes laby.grille in
-
-  Printf.printf "Labyrinth (n = %d, m = %d)\n" n m;
-  
-  Array.iteri (fun i row ->
-    Array.iteri (fun j node ->
-      Printf.printf "Node: (%d, %d)\n---------\n" i j;
-      Node.print_noeud node
-    ) row
-  ) nodes;
-
-  Printf.printf "Depart: (%d, %d)\n" (fst laby.depart) (snd laby.depart);
-  Printf.printf "Arrive: (%d, %d)\n" (fst laby.arrive) (snd laby.arrive);
-  Printf.printf "Position: (%d, %d)\n\n" (fst laby.position) (snd laby.position)
 ;;
 
-(* Example usage *)
-let () =
-  let laby = cree_laby_plein 3 3 (0, 0) (2, 2) in
-  print_laby laby;
-;;
+let print_laby laby=
+  let y = get_length laby.grille in
+    let x = get_width laby.grille in
+      let n = get_nodes laby.grille in
+        let rec print_edge w=
+          begin
+            if w>=0 then
+              Printf.printf "-+" ;
+              print_edge w-1;
+          end 
+          in 
+        let rec print_co_droit a1 xx yy i j str dep=
+          let string_Node=
+            match (i,j) with
+              dep->"S"
+              |arr->"E"
+              |_->" "
+          in
+          if j<yy-1 then
+            if i = xx-1 then 
+                Printf.printf" | \n";
+                Printf.printf "%s \n" str;
+                Printf.printf "|"; 
+              (print_co_droit a1 xx yy 0 j+1 "+")
+            else begin
+              if sont_connecte a1.(i).(j) a1.(i+1).(j) then 
+                printf.Printf("%s ") string_Node
+              else Printf.printf("%s|") string_Node
+              if sont_connecte a1.(i).(j) a1.(i).(j+1) then
+                let str = str^" +" in print_co_droit a1 xx yy (i+1) j str
+              else let str = str^"-+" in print_co_droit a1 xx yy (i+1) j str
+            end 
+          else 
+            if i = xx-1 then 
+              Printf.printf" | \n";
+              print_edge xx-1;
+            else
+              if sont_connecte a1.(i).(j) a1.(i+1).(j) then 
+                printf.Printf("%s ") string_Node
+              else Printf.printf("%s|") string_Node
+              print_co_droit a1 xx yy (i+1) j str
+        in
+          (print_edge (x-1));
+          Printf.printf "\n";
+          Printf.printf "|";
+          print_co_droit n x y 0 0 "+";
+      ;;
