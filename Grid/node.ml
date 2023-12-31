@@ -1,13 +1,16 @@
 
-type node =  {id : int*int ; connexions : node list}
+type node =  {id : int*int ; connexions : node list ; visite : bool}
 
 (*Getters*)
 let get_id n = n.id
 let get_connexions n = n.connexions 
+let est_visite n = n.visite 
+
 
 (*Setters*)
-let set_id n id = {id = id ; connexions = n.connexions}
-let set_connexions n connec= {id = n.id ; connexions = n.connexions}
+let set_id n id = {id = id ; connexions = n.connexions ; visite = n.visite}
+let set_connexions n connec= {id = n.id ; connexions = n.connexions; visite = n.visite}
+let set_visite n b = {id = n.id ; connexions = n.connexions ; visite = b}
 
 (*Utilitaries*)
 
@@ -33,15 +36,15 @@ let ajoute_connexion n m =
         if not (sont_adjacent n.id m.id) then failwith "Les deux noeuds ne sont pas adjacents"
         else 
             if not (sont_connecte n m) then 
-                let n2 = {id = n.id ; connexions = m::n.connexions} in 
+                let n2 = {id = n.id ; connexions = m::n.connexions ; visite = n.visite} in 
                 if not (sont_connecte m n) then 
-                    let m2 = {id = m.id ; connexions = n::m.connexions} in 
+                    let m2 = {id = m.id ; connexions = n::m.connexions ; visite = m.visite} in 
                     (n2 , m2)
                 else
                     (n2,m)
             else
                 if not (sont_connecte m n) then 
-                    let m2 = {id = m.id ; connexions = n::m.connexions} in 
+                    let m2 = {id = m.id ; connexions = n::m.connexions ; visite = m.visite} in 
                     (n , m2)
                 else
                     (n,m)
@@ -56,13 +59,13 @@ let supprime_connexion n m =
         match l with 
         [] -> []
         |p::s -> if p.id = m then s else p::(loop s m)
-        in {id = n.id ; connexions = (loop n.connexions ident)}
+        in {id = n.id ; connexions = (loop n.connexions ident); visite = n.visite}
     in 
     (bis n m.id , bis m n.id)
 
 
 let cree_noeud i list_co = 
-    let n = {id = i ; connexions = []} in 
+    let n = {id = i ; connexions = [] ; visite = false} in 
     let rec loop l n =
         match l with
         []-> n
@@ -72,10 +75,21 @@ let cree_noeud i list_co =
     in loop list_co n 
 
 let print_noeud n = 
-    Printf.printf "Noeud: (%d , %d)\n---------\nConnexions: " (fst n.id) (snd n.id);
-    if List.length n.connexions >0 then List.iter (fun x -> Printf.printf "(%d , %d)" (fst x.id) (snd x.id) ) n.connexions
-    else  Printf.printf " / " ;
-    Printf.printf "\n\n"
+    Printf.printf "Noeud: (%d , %d)"  (fst n.id) (snd n.id);
+    let suite_print = 
+        Printf.printf"\n------------\nConnexions: ";
+        if List.length n.connexions >0 then List.iter (fun x -> Printf.printf "(%d , %d)" (fst x.id) (snd x.id) ) n.connexions
+        else  Printf.printf " / " ;
+        Printf.printf "\n"
+    in
+    if n.visite then 
+        begin
+        Printf.printf "-Visite.\n\n" ;
+        suite_print 
+        end
+    else 
+        Printf.printf "-Pas visite.\n\n";
+        suite_print
 
 
 

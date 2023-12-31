@@ -41,14 +41,14 @@ let cree_laby_vide n m s e =
 let se_deplacer laby d = 
   let position = laby.position in
   let next = position +* Grid.get_dir d in
-  let n = get_length laby.grille in 
-  let m = get_width laby.grille in
+  let n = Grid.get_length laby.grille in 
+  let m = Grid.get_width laby.grille in
   if not (Grid.coords_correctes next  n m) then failwith "Déplacement impossible : Coordonnées d'arrivée hors labyrinthe"
   else 
-    if not (Node.sont_connecte (get_nodes laby.grille).(fst position).(snd position) (get_nodes laby.grille).(fst next).(snd next)) ||
-      not ((Node.sont_connecte (get_nodes laby.grille).(fst next).(snd next)) (get_nodes laby.grille).(fst position).(snd position) ) then failwith "Deplacement impossible: Il y a un mur entre les deux cases"
+    if not (Node.sont_connecte (Grid.get_nodes laby.grille).(fst position).(snd position) (Grid.get_nodes laby.grille).(fst next).(snd next)) ||
+      not ((Node.sont_connecte (Grid.get_nodes laby.grille).(fst next).(snd next)) (Grid.get_nodes laby.grille).(fst position).(snd position) ) then failwith "Deplacement impossible: Il y a un mur entre les deux cases"
   else
-    {depart = g.depart ; arrive = g.arrive ; position = next ; grille = laby.grille }
+    {depart = laby.depart ; arrive = laby.arrive ; position = next ; grille = laby.grille }
 
 
 let est_resolu laby = laby.position = laby.arrive
@@ -61,60 +61,78 @@ let get_grille laby = laby.grille
 
 (*Setters*)
 let set_depart laby id =
-    if not (Grid.coords_correctes id (get_length (laby.grille)) (get_width (laby.grille))) then failwith "Coordonnées pour la case de départ incorrectes."
+    if not (Grid.coords_correctes id (Grid.get_length (laby.grille)) (Grid.get_width (laby.grille))) then failwith "Coordonnées pour la case de départ incorrectes."
     else
-        {depart = id ; arrive=laby.arrive ; position = depart ; grille = laby.grille}
+        {depart = id ; arrive=laby.arrive ; position = id ; grille = laby.grille}
 ;;
 let set_arrive laby id =
-    if not (Grid.coords_correctes id (get_length (laby.grille)) (get_width (laby.grille))) then failwith "Coordonnées pour la case d'arrivé incorrectes."
+    if not (Grid.coords_correctes id (Grid.get_length (laby.grille)) (Grid.get_width (laby.grille))) then failwith "Coordonnées pour la case d'arrivé incorrectes."
     else
         {depart = laby.depart ; arrive= id ; position = laby.position ; grille = laby.grille}
 ;;
 
 let print_laby laby=
-  let y = get_length laby.grille in
-    let x = get_width laby.grille in
-      let n = get_nodes laby.grille in
+  let y = Grid.get_length laby.grille in
+    let x = Grid.get_width laby.grille in
+      let n = Grid.get_nodes laby.grille in
         let rec print_edge w=
-          begin
             if w>=0 then
-              Printf.printf "-+" ;
-              print_edge w-1;
-          end 
+              begin
+              Printf.printf "+-" ;
+              print_edge (w-1);
+              end
+            else 
+              Printf.printf "+\n"
           in 
-        let rec print_co_droit a1 xx yy i j str dep=
+        let rec print_co_droit a1 xx yy i j str =
           let string_Node=
-            match (i,j) with
-              dep->"S"
-              |arr->"E"
-              |_->" "
+            if compare (i,j) laby.depart = 0 then "S"
+            else if compare (i,j) laby.arrive = 0 then "E"
+                else " "
           in
           if j<yy-1 then
             if i = xx-1 then 
+              begin
                 Printf.printf" | \n";
-                Printf.printf "%s \n" str;
-                Printf.printf "|"; 
-              (print_co_droit a1 xx yy 0 j+1 "+")
-            else begin
-              if sont_connecte a1.(i).(j) a1.(i+1).(j) then 
-                printf.Printf("%s ") string_Node
-              else Printf.printf("%s|") string_Node
-              if sont_connecte a1.(i).(j) a1.(i).(j+1) then
-                let str = str^" +" in print_co_droit a1 xx yy (i+1) j str
-              else let str = str^"-+" in print_co_droit a1 xx yy (i+1) j str
-            end 
+                let pr = if Node.sont_connecte a1.(i).(j) a1.(i).(j+1) &&  Node.sont_connecte a1.(i).(j+1) a1.(i).(j)  then 
+                  Printf.printf "%s +\n" str
+                else 
+                  Printf.printf "%s-+\n" str
+                in 
+                  pr ;
+                  Printf.printf "|"; 
+                  print_co_droit a1 xx yy 0 (j+1) "+"
+              end
+            else 
+              begin
+                if Node.sont_connecte a1.(i).(j) a1.(i+1).(j) && Node.sont_connecte a1.(i+1).(j) a1.(i).(j) then 
+                  Printf.printf "%s " string_Node
+                else 
+                  begin
+                  Printf.printf "%s|" string_Node ;
+                  if Node.sont_connecte a1.(i).(j) a1.(i).(j+1) &&  Node.sont_connecte a1.(i).(j+1) a1.(i).(j)  then
+                    let str = str^" +" in print_co_droit a1 xx yy (i+1) j str
+                  else let str = str^"-+" in print_co_droit a1 xx yy (i+1) j str
+                  end
+              end 
           else 
             if i = xx-1 then 
-              Printf.printf" | \n";
-              print_edge xx-1;
-            else
-              if sont_connecte a1.(i).(j) a1.(i+1).(j) then 
-                printf.Printf("%s ") string_Node
-              else Printf.printf("%s|") string_Node
-              print_co_droit a1 xx yy (i+1) j str
+              begin
+              Printf.printf" |\n";
+              print_edge (xx-1)
+              end
+            else 
+              begin
+              if Node.sont_connecte a1.(i).(j) a1.(i+1).(j) && Node.sont_connecte a1.(i+1).(j) a1.(i).(j)  then 
+                Printf.printf "%s " string_Node
+              else 
+                begin
+                Printf.printf "%s|" string_Node ;
+                print_co_droit a1 xx yy (i+1) j str
+                end
+              end
         in
           (print_edge (x-1));
-          Printf.printf "\n";
           Printf.printf "|";
           print_co_droit n x y 0 0 "+";
       ;;
