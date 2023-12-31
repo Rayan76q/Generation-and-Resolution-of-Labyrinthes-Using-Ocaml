@@ -7,7 +7,7 @@ let dir_tab = Array.of_list (List.map Grid.get_dir [Up; Right ; Down ; Left])
 let ( +* ) t1 t2 = (fst t1 + fst t2,snd t1 + snd t2) 
 
 
-type laby = {depart = int*int ; arrive = int*int ; position = int*int ; grille = grid}
+type laby = {depart : int*int ; arrive : int*int ; position : int*int ; grille : grid}
 
 
 let cree_laby_plein n m s e = 
@@ -48,7 +48,7 @@ let se_deplacer laby d =
     if not (Node.sont_connecte (get_nodes laby.grille).(fst position).(snd position) (get_nodes laby.grille).(fst next).(snd next)) ||
       not ((Node.sont_connecte (get_nodes laby.grille).(fst next).(snd next)) (get_nodes laby.grille).(fst position).(snd position) ) then failwith "Deplacement impossible: Il y a un mur entre les deux cases"
   else
-    {depart = s ; arrive =  ; position = next ; grille = laby.grille }
+    {depart = s ; arrive = s ; position = next ; grille = laby.grille }
 
 
 let est_resolu laby = laby.position = laby.arrive
@@ -69,3 +69,30 @@ let set_arrive laby id =
     if not (Grid.coords_correctes id (get_length (laby.grille)) (get_width (laby.grille))) then failwith "Coordonnées pour la case d'arrivé incorrectes."
     else
         {depart = laby.depart ; arrive= id ; position = laby.position ; grille = laby.grille}
+
+
+
+let print_laby laby =
+  let n = Grid.get_length laby.grille in
+  let m = Grid.get_width laby.grille in
+  let nodes = Grid.get_nodes laby.grille in
+
+  Printf.printf "Labyrinth (n = %d, m = %d)\n" n m;
+  
+  Array.iteri (fun i row ->
+    Array.iteri (fun j node ->
+      Printf.printf "Node: (%d, %d)\n---------\n" i j;
+      Node.print_noeud node
+    ) row
+  ) nodes;
+
+  Printf.printf "Depart: (%d, %d)\n" (fst laby.depart) (snd laby.depart);
+  Printf.printf "Arrive: (%d, %d)\n" (fst laby.arrive) (snd laby.arrive);
+  Printf.printf "Position: (%d, %d)\n\n" (fst laby.position) (snd laby.position)
+;;
+
+(* Example usage *)
+let () =
+  let laby = cree_laby_plein 3 3 (0, 0) (2, 2) in
+  print_laby laby;
+;;

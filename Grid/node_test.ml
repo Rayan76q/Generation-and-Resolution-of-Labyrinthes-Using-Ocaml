@@ -15,9 +15,12 @@ let m = Node.supprime_connexion m (1,2)    plante
 let () = Node.print_noeud m
 *)
 
+(*
+Erreur, supprime_connexion
 let m = Node.supprime_connexion m (1,3)
 let () = Node.print_noeud m
-let n = Node.supprime_connexion n (1,2)
+let n = Node.supprime_connexion n (1,2) 
+*)
 let ()=Printf.printf "--------------------------------\n"
 let m = Node.cree_noeud (1,2) [(Node.cree_noeud (1,3) [])]
 let n = Node.cree_noeud (1,1) []
