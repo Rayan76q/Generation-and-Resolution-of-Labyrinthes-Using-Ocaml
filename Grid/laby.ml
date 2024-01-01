@@ -93,7 +93,7 @@ let print_laby laby=
           if j<yy-1 then
             if i = xx-1 then 
               begin
-                Printf.printf" | \n";
+                Printf.printf "%s|\n" string_Node;
                 let pr = if Node.sont_connecte a1.(i).(j) a1.(i).(j+1) &&  Node.sont_connecte a1.(i).(j+1) a1.(i).(j)  then 
                   Printf.printf "%s +\n" str
                 else 
@@ -105,34 +105,47 @@ let print_laby laby=
               end
             else 
               begin
-                if Node.sont_connecte a1.(i).(j) a1.(i+1).(j) && Node.sont_connecte a1.(i+1).(j) a1.(i).(j) then 
+                let pr2 = if Node.sont_connecte a1.(i).(j) a1.(i+1).(j) && Node.sont_connecte a1.(i+1).(j) a1.(i).(j) then 
                   Printf.printf "%s " string_Node
                 else 
-                  begin
                   Printf.printf "%s|" string_Node ;
+                in pr2 ;
                   if Node.sont_connecte a1.(i).(j) a1.(i).(j+1) &&  Node.sont_connecte a1.(i).(j+1) a1.(i).(j)  then
                     let str = str^" +" in print_co_droit a1 xx yy (i+1) j str
                   else let str = str^"-+" in print_co_droit a1 xx yy (i+1) j str
-                  end
               end 
           else 
             if i = xx-1 then 
               begin
-              Printf.printf" |\n";
+              Printf.printf "%s|\n" string_Node;
               print_edge (xx-1)
               end
             else 
-              begin
-              if Node.sont_connecte a1.(i).(j) a1.(i+1).(j) && Node.sont_connecte a1.(i+1).(j) a1.(i).(j)  then 
+              let pr3 = if Node.sont_connecte a1.(i).(j) a1.(i+1).(j) && Node.sont_connecte a1.(i+1).(j) a1.(i).(j)  then 
                 Printf.printf "%s " string_Node
               else 
-                begin
                 Printf.printf "%s|" string_Node ;
+              in pr3;
                 print_co_droit a1 xx yy (i+1) j str
-                end
-              end
         in
           (print_edge (x-1));
           Printf.printf "|";
           print_co_droit n x y 0 0 "+";
       ;;
+
+
+
+(*TESTS D'Affichages*)
+      let l = cree_laby_plein 10 10 (0,0) (5,5)
+      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,0) (0,1)) }
+      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,2) (0,1)) }
+      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,0) (1,0)) }
+      
+      let () = print_laby l
+      
+      
+      let l = cree_laby_vide 10 10 (0,0) (9,9)
+      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (0,0) (1,0)) }
+      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (5,5) (6,5)) }
+      
+      let () = print_laby l
