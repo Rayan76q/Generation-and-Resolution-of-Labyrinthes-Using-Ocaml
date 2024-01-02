@@ -9,7 +9,7 @@ val coords_correctes : int * int -> int -> int -> bool
 val cree_grid : int -> int -> ((int * int) * (int * int)) list -> grid
 val ajoute_mur : grid -> int*int -> int*int -> grid
 val supprime_mur : grid -> int*int -> int*int -> grid
-
+val visite_case: grid->int*int->grid
 
 val get_voisins : int -> int -> int*int -> (int*int) list
 

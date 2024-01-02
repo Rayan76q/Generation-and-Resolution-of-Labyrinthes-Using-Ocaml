@@ -73,6 +73,17 @@ let supprime_mur g id1 id2 =
       g.nodes.(fst id1).(snd id1) <- m1 ;
       g.nodes.(fst id2).(snd id2) <- m2 ;
       {length = g.length ; width = g.width ; nodes = g.nodes ; edges = (id1 , id2)::g.edges} 
+;;
+
+let visite_case g id1 =
+  if coords_correctes id1 g.length g.width then
+    let nodez= g.nodes in
+    let updated_node = Node.set_visite nodez.(fst id1).(snd id1) true in
+    nodez.(fst id1).(snd id1) <- updated_node;
+    {length = g.length ; width = g.width ; nodes = nodez ; edges = g.edges} 
+  else
+    failwith "Coordonnées Invalides"
+;;
 
 
 let get_voisins n m id1 = 
@@ -99,6 +110,7 @@ let sont_egaux g1 g2 =
         if loopj 0 then loopi (i+1)
         else false
     in loopi 0
+  ;;
 
 (*getters et setters*)
 

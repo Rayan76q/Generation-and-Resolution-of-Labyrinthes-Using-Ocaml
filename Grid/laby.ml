@@ -88,7 +88,8 @@ let print_laby laby=
           let string_Node=
             if compare (i,j) laby.depart = 0 then "S"
             else if compare (i,j) laby.arrive = 0 then "E"
-                else " "
+            else if Node.est_visite a1.(i).(j) then "."
+            else " "
           in
           if j<yy-1 then
             if i = xx-1 then 
@@ -111,7 +112,12 @@ let print_laby laby=
                   Printf.printf "%s|" string_Node ;
                 in pr2 ;
                   if Node.sont_connecte a1.(i).(j) a1.(i).(j+1) &&  Node.sont_connecte a1.(i).(j+1) a1.(i).(j)  then
-                    let str = str^" +" in print_co_droit a1 xx yy (i+1) j str
+                    let str = 
+                    begin
+                      if Node.est_visite a1.(i).(j) && Node.est_visite a1.(i).(j+1) then
+                        str^".+"
+                      else str^" +"
+                    end in print_co_droit a1 xx yy (i+1) j str
                   else let str = str^"-+" in print_co_droit a1 xx yy (i+1) j str
               end 
           else 
@@ -147,5 +153,11 @@ let print_laby laby=
       let l = cree_laby_vide 10 10 (0,0) (9,9)
       let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (0,0) (1,0)) }
       let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (5,5) (6,5)) }
-      
+      let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (1,1)}
+      let () = print_laby l
+
+      let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (0,0)}
+      let () = print_laby l
+
+      let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (1,0)}
       let () = print_laby l
