@@ -1,3 +1,5 @@
+Random.init 42
+
 
 let print_ids l = 
     Printf.printf "[ ";
@@ -19,6 +21,13 @@ let genere_arretes n m =
     in  loopi 0 []
 
 let () = print_edges (genere_arretes 5 5)
+let tags = Array.init 5 (fun i -> Array.init 5 (fun j -> (i*5)+j) ) 
+let () = Printf.printf "%d\n" tags.(0).(0)
+let () = Printf.printf "%d\n" tags.(0).(1)
+let () = Printf.printf "%d\n" tags.(1).(0)
+let () = Printf.printf "%d\n" tags.(1).(1)
+let () = Printf.printf "%d\n" tags.(1).(4)
+let () = Printf.printf "%d\n" tags.(4).(4)
 
 
 
@@ -49,3 +58,36 @@ let g = cree_laby_vide 5 5 (0,0) (0,0)
       let () = Node.print_noeud (Grid.get_nodes (g)).(4).(4)
 
       let () = Node.print_noeud (Grid.get_nodes (g)).(4).(1)
+
+
+
+
+let print_matrix m n1 n2 = 
+  let rec loopi i = 
+        let rec loopj j=
+          if j < n2 then
+            begin Printf.printf "%d " (m.(i).(j)) ;
+            loopj (j+1)
+          end
+        in
+    if i <  n1 then 
+      begin
+        loopj 0 ; 
+        Printf.printf "\n";
+        loopi (i+1)
+      end
+    in 
+    loopi 0
+
+
+let () = (print_matrix tags 5 5)
+
+
+
+
+let shuffle_edges edges = 
+  let taged = List.map (fun x -> (Random.bits (), x)) edges in
+  let randomized = List.sort compare taged in
+  List.map snd randomized
+
+let () = print_edges (genere_arretes 3 3)

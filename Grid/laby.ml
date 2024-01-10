@@ -71,6 +71,88 @@ let set_arrive laby id =
         {depart = laby.depart ; arrive= id ; position = laby.position ; grille = laby.grille}
 ;;
 
+
+(*auxiliere pour la generation*)
+Random.init 10
+
+let print_matrix m n1 n2 = 
+  let rec loopi i = 
+        let rec loopj j=
+          if j < n2 then
+            begin Printf.printf "%d " (m.(i).(j)) ;
+            loopj (j+1)
+          end
+        in
+    if i <  n1 then 
+      begin
+        loopj 0 ; 
+        Printf.printf "\n";
+        loopi (i+1)
+      end
+    in 
+    loopi 0 ; 
+    Printf.printf "\n"
+
+
+let generate_edges n m = 
+  let rec loopi i acc=
+    if i = n then acc
+    else 
+      let ligne = List.map (fun x -> (i,x)) (List.init m (fun x->x)) in 
+      loopi (i+1) (List.fold_left (fun a id-> (List.map (fun voisin-> (id,voisin))(Grid.get_voisins n m id))@a) acc ligne)
+  in  loopi 0 []
+
+let shuffle_edges edges = 
+  let taged = List.map (fun x -> (Random.bits (), x)) edges in
+  let randomized = List.sort compare taged in
+  List.map snd randomized
+
+let delete_wall laby edge =  {depart = laby.depart ; arrive =  laby.arrive ; position = laby.position ; grille = Grid.supprime_mur laby.grille (fst edge) (snd edge) }
+
+let rec flip tags g start v =
+  tags.(fst start).(snd start) <- v;
+  let current_node = (Grid.get_nodes g).(fst start).(snd start) in
+    let rec loop l =
+      match l with 
+      [] -> ()
+      | voisin::suite -> let pos_voisin = (Node.get_id voisin)in
+        if tags.(fst pos_voisin).(snd pos_voisin)<>v then 
+        begin
+        flip tags g (Node.get_id voisin) v ;
+        loop suite
+        end
+        else
+          loop suite
+    in loop (Node.get_connexions current_node)
+
+
+      
+    let generate_random_laby_fusion n m s e = 
+      let laby = cree_laby_plein n m s e in 
+      let random_walls = shuffle_edges (generate_edges n m) in
+      let tags = Array.init n (fun i -> Array.init m (fun j -> (i*5)+j) )in 
+      let rec loop walls wallnum matrix_tag accLaby = 
+        if wallnum = n*m then accLaby  (*we done*)
+        else 
+          match walls with 
+          [] -> failwith "ERROR"
+          | ((x1,y1), (x2,y2))::rest ->
+            if  matrix_tag.(x1).(y1) = matrix_tag.(x2).(y2) then
+              loop rest wallnum matrix_tag accLaby
+            else
+              let f = if matrix_tag.(x1).(y1) < matrix_tag.(x2).(y2) 
+                then flip matrix_tag accLaby.grille (x2,y2) matrix_tag.(x1).(y1)
+              else 
+                flip matrix_tag accLaby.grille (x1,y1) matrix_tag.(x2).(y2)
+              in 
+              f ;
+              let nLaby = delete_wall accLaby ((x1,y1), (x2,y2)) in 
+              loop rest (wallnum + 1) matrix_tag nLaby
+      in
+      loop random_walls 1 tags laby
+    
+
+
 let print_laby laby=
   let y = Grid.get_length laby.grille in
     let x = Grid.get_width laby.grille in
@@ -141,6 +223,7 @@ let print_laby laby=
 
 
 
+
 (*TESTS D'Affichages*)
       let l = cree_laby_plein 10 10 (0,0) (5,5)
       let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,0) (0,1)) }
@@ -161,3 +244,7 @@ let print_laby laby=
 
       let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (1,0)}
       let () = print_laby l
+
+
+let random_laby = generate_random_laby_fusion 250 250 (0,0) (2,2)
+let () = print_laby random_laby 
