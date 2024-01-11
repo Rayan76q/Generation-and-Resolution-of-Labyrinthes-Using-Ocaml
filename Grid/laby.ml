@@ -207,26 +207,41 @@ let generate_random_laby_exploration n m s e =
   
   in reset_visits (explore (Grid.get_nodes laby.grille).(fst current_position).(snd current_position) [] laby)
 
-let rec loop l f laby=
+let rec loop l f laby pile=
   match l with
-  a::l1-> let x= f a in if fst x = false then loop l1 f  laby else (fst x) , (snd x) 
-  |[]-> false , laby 
+  a::l1-> let x,y= f a in if fst x = false then loop l1 f laby y else (x,(a::y)@pile)
+  |[]-> (false , laby), pile 
 ;;
 
-let rec resolve_bis_cours labyy i j nnode=
+let rec resolve_bis_cours labyy i j nnode pile=
   if (i,j) = labyy.arrive then 
-    true , labyy 
+    ((true , labyy ) , pile)
   else if (Node.est_visite(nnode.(i).(j))=false ) then 
     let node_remplacement = Node.set_visite nnode.(i).(j) true in
     nnode.(i).(j)<-node_remplacement;
     let conn = Node.get_connexions nnode.(i).(j) in
     let conn= List.map Node.get_id conn in 
-    let fin = loop conn (fun (x,y)-> resolve_bis_cours labyy x y nnode) labyy  in
+    let fin = loop conn (fun (x,y)-> resolve_bis_cours labyy x y nnode pile) labyy pile in
   fin
-  else false , labyy
+  else ((false , labyy) , pile)
 ;;
+
+let clean_path_laby laby lissst=
+  let rec loopp labyy l=
+    match l with
+    a::l1-> loopp (set_visite_case labyy a) l1
+    |[]->labyy
+  in loopp laby lissst
+;;
+
 let resolve_cours laby =
-  snd(resolve_bis_cours laby (fst laby.depart) (snd laby.depart) (Grid.get_nodes laby.grille))
+  let big_M=resolve_bis_cours laby (fst laby.depart) (snd laby.depart) (Grid.get_nodes laby.grille) [laby.depart] in
+  let lab = reset_visits (snd ( fst big_M)) in
+  
+  (* print_laby lab; *)
+  (* List.iter (fun (x,y)-> Printf.printf"(%d,%d)" x y) (snd big_M);
+  Printf.printf("\n"); *)
+  clean_path_laby lab (snd big_M)
 ;;
 
 let print_laby laby=
@@ -322,10 +337,28 @@ let () = print_laby l
 *)
 
 
-let random_laby = generate_random_laby_fusion 5 4 (0,0) (2,2)
-let () = print_laby random_laby 
+let random_laby = generate_random_laby_fusion 6 4 (0,0) (2,2)
+(* let () = print_laby random_laby  *)
+let ()= print_laby (resolve_cours random_laby)
 
 
-let random_laby = generate_random_laby_exploration 5 2 (0,0) (2,1)
-let () = print_laby random_laby 
+let random_laby = generate_random_laby_exploration 10 10 (0,0) (7,5)
+let ()= print_laby (resolve_cours random_laby)
+(* let () = print_laby random_laby *)
 
+let random_laby = generate_random_laby_exploration 50 50 (5,18) (31,42)
+let ()= print_laby (resolve_cours random_laby)
+(* let () = print_laby random_laby *)
+
+
+let random_laby = generate_random_laby_exploration 7 8 (4,4) (6,7)
+let ()= print_laby (resolve_cours random_laby)
+(* let () = print_laby random_laby *)
+
+let random_laby = generate_random_laby_exploration 6 8 (3,4) (0,7)
+let ()= print_laby (resolve_cours random_laby)
+(* let () = print_laby random_laby *)
+
+let random_laby = generate_random_laby_exploration 6 7 (3,4) (5,0)
+let ()= print_laby (resolve_cours random_laby)
+(* let () = print_laby random_laby *)
