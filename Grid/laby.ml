@@ -38,6 +38,16 @@ let cree_laby_vide n m s e =
     
 
 
+let set_visite_case laby id1 =
+      if Grid.coords_correctes id1 (Grid.get_length laby.grille) (Grid.get_width laby.grille) then
+        let nodez = Grid.get_nodes laby.grille in
+        let updated_node = Node.set_visite nodez.(fst id1).(snd id1) (not (Node.est_visite nodez.(fst id1).(snd id1))) in
+        nodez.(fst id1).(snd id1) <- updated_node;
+        {depart = laby.depart; arrive = laby.arrive ; position= laby.position; grille = laby.grille}
+      else
+        failwith "Coordonnées Invalides"
+;;
+
 let se_deplacer laby d = 
   let position = laby.position in
   let next = position +* Grid.get_dir d in
@@ -156,20 +166,46 @@ let rec flip tags g start v =
 
 
 let choisie_voisin_random noeud =  
-  let taged = List.map (fun x -> (Random.bits (), x)) edges in
+  let taged = List.map (fun x -> (Random.bits (), x)) noeud in
   let randomized = List.map snd (List.sort compare taged) in
   List.hd randomized
+
+let  reset_visits laby =
+  let rec loopi i laby= 
+    let rec loopj j laby=
+      if j < (Grid.get_width laby.grille) then
+        if Node.est_visite (Grid.get_nodes laby.grille).(i).(j) then 
+          loopj (j+1) (set_visite_case laby (i,j))
+        else
+          loopj (j+1) laby
+    in
+if i < (Grid.get_length laby.grille) then 
+  begin
+    loopj 0 laby; 
+    loopi (i+1) laby
+  end
+else 
+  laby
+in 
+loopi 0 laby
 
 
 let generate_random_laby_exploration n m s e =
   let laby = cree_laby_plein n m s e in 
   let current_position = (Random.int n , Random.int m) in
   let rec explore current_node visited accLaby =
-    let updated_laby = {depart = accLaby.depart; arrive = accLaby.arrive ; position=accLaby.position; grille = (Grid.visite_case accLaby.grille (Node.get_id current_node))}
-    
-    
+    let updated_laby = if not (Node.est_visite current_node) then set_visite_case accLaby (Node.get_id current_node) else accLaby in
+    let voisins_non_visite = List.filter (fun node -> not (Node.est_visite node)) (List.map (fun (x,y) -> (Grid.get_nodes updated_laby.grille).(x).(y)) (Grid.get_voisins (Grid.get_length updated_laby.grille) (Grid.get_width updated_laby.grille) (Node.get_id current_node) )) in
+    if voisins_non_visite = [] then 
+      match visited with
+      [] -> updated_laby
+      | (x,y) :: rest ->explore (Grid.get_nodes updated_laby.grille).(x).(y) rest updated_laby
+    else
+    let v = choisie_voisin_random voisins_non_visite in
+    let updated_laby = {depart = updated_laby.depart; arrive = updated_laby.arrive ; position=updated_laby.position; grille = Grid.supprime_mur updated_laby.grille (Node.get_id current_node) (Node.get_id v) } in
+    explore v ((Node.get_id current_node)::visited) updated_laby
   
-
+  in reset_visits (explore (Grid.get_nodes laby.grille).(fst current_position).(snd current_position) [] laby)
 
 
 let print_laby laby=
@@ -240,30 +276,35 @@ let print_laby laby=
           print_co_droit n x y 0 0 "+";
       ;;
 
-
-
-
-(*TESTS D'Affichages*)
-      let l = cree_laby_plein 10 10 (0,0) (5,5)
-      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,0) (0,1)) }
-      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,2) (0,1)) }
-      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,0) (1,0)) }
       
-      let () = print_laby l
-      
-      
-      let l = cree_laby_vide 10 8 (0,0) (5,5)
-      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (0,0) (1,0)) }
-      let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (5,5) (6,5)) }
-      let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (1,1)}
-      let () = print_laby l
 
-      let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (0,0)}
-      let () = print_laby l
+(*TESTS D'Affichages
+let l = cree_laby_plein 10 10 (0,0) (5,5)
+let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,0) (0,1)) }
+let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,2) (0,1)) }
+let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,0) (1,0)) }
 
-      let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (1,0)}
-      let () = print_laby l
+let () = print_laby l
 
 
-let random_laby = generate_random_laby_fusion 5 3 (0,0) (2,2)
+let l = cree_laby_vide 10 8 (0,0) (5,5)
+let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (0,0) (1,0)) }
+let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (5,5) (6,5)) }
+let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (1,1)}
+let () = print_laby l
+
+let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (0,0)}
+let () = print_laby l
+
+let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (1,0)}
+let () = print_laby l
+*)
+
+
+let random_laby = generate_random_laby_fusion 5 4 (0,0) (2,2)
 let () = print_laby random_laby 
+
+
+let random_laby = generate_random_laby_exploration 5 2 (0,0) (2,1)
+let () = print_laby random_laby 
+

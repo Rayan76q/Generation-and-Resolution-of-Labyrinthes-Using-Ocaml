@@ -75,19 +75,9 @@ let supprime_mur g id1 id2 =
       {length = g.length ; width = g.width ; nodes = g.nodes ; edges = (id1 , id2)::g.edges} 
 ;;
 
-let visite_case g id1 =
-  if coords_correctes id1 g.length g.width then
-    let nodez= g.nodes in
-    let updated_node = Node.set_visite nodez.(fst id1).(snd id1) true in
-    nodez.(fst id1).(snd id1) <- updated_node;
-    {length = g.length ; width = g.width ; nodes = nodez ; edges = g.edges} 
-  else
-    failwith "Coordonnées Invalides"
-;;
-
 
 let get_voisins n m id1 = 
-  (*Renvoie une liste des voisins du noeud, connecté ou pas*)
+  (*Renvoie la liste des identifiants des voisins du noeud, connecté ou pas*)
   if coords_correctes id1 n m then 
   let voisins_potentiels = Array.map (fun x -> id1+*x) dir_tab in
   List.filter (fun v-> coords_correctes v n m) (Array.to_list voisins_potentiels)
