@@ -207,6 +207,27 @@ let generate_random_laby_exploration n m s e =
   
   in reset_visits (explore (Grid.get_nodes laby.grille).(fst current_position).(snd current_position) [] laby)
 
+let rec loop l f laby=
+  match l with
+  a::l1-> let x= f a in if fst x = false then loop l1 f  laby else (fst x) , (snd x) 
+  |[]-> false , laby 
+;;
+
+let rec resolve_bis_cours labyy i j nnode=
+  if (i,j) = labyy.arrive then 
+    true , labyy 
+  else if (Node.est_visite(nnode.(i).(j))=false ) then 
+    let node_remplacement = Node.set_visite nnode.(i).(j) true in
+    nnode.(i).(j)<-node_remplacement;
+    let conn = Node.get_connexions nnode.(i).(j) in
+    let conn= List.map Node.get_id conn in 
+    let fin = loop conn (fun (x,y)-> resolve_bis_cours labyy x y nnode) labyy  in
+  fin
+  else false , labyy
+;;
+let resolve_cours laby =
+  snd(resolve_bis_cours laby (fst laby.depart) (snd laby.depart) (Grid.get_nodes laby.grille))
+;;
 
 let print_laby laby=
   let x = Grid.get_length laby.grille in
