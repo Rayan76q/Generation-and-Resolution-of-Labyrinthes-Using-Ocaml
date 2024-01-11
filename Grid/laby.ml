@@ -150,12 +150,31 @@ let rec flip tags g start v =
               loop rest (wallnum + 1) matrix_tag nLaby
       in
       loop random_walls 1 tags laby
+
+
+(*Auxilière pour Génération par exploration*)
+
+
+let choisie_voisin_random noeud =  
+  let taged = List.map (fun x -> (Random.bits (), x)) edges in
+  let randomized = List.map snd (List.sort compare taged) in
+  List.hd randomized
+
+
+let generate_random_laby_exploration n m s e =
+  let laby = cree_laby_plein n m s e in 
+  let current_position = (Random.int n , Random.int m) in
+  let rec explore current_node visited accLaby =
+    let updated_laby = {depart = accLaby.depart; arrive = accLaby.arrive ; position=accLaby.position; grille = (Grid.visite_case accLaby.grille (Node.get_id current_node))}
     
+    
+  
+
 
 
 let print_laby laby=
-  let y = Grid.get_length laby.grille in
-    let x = Grid.get_width laby.grille in
+  let x = Grid.get_length laby.grille in
+    let y = Grid.get_width laby.grille in
       let n = Grid.get_nodes laby.grille in
         let rec print_edge w=
             if w>=0 then
@@ -233,7 +252,7 @@ let print_laby laby=
       let () = print_laby l
       
       
-      let l = cree_laby_vide 10 10 (0,0) (9,9)
+      let l = cree_laby_vide 10 8 (0,0) (5,5)
       let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (0,0) (1,0)) }
       let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.ajoute_mur l.grille (5,5) (6,5)) }
       let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = Grid.visite_case l.grille (1,1)}
@@ -246,5 +265,5 @@ let print_laby laby=
       let () = print_laby l
 
 
-let random_laby = generate_random_laby_fusion 250 250 (0,0) (2,2)
+let random_laby = generate_random_laby_fusion 5 3 (0,0) (2,2)
 let () = print_laby random_laby 
