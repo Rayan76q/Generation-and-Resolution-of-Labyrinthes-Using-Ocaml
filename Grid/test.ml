@@ -1,5 +1,11 @@
 Random.init 42
 
+let ( +* ) t1 t2 = (fst t1 + fst t2,snd t1 + snd t2) 
+let ( -* ) t1 t2 = (fst t1 - fst t2,snd t1 - snd t2) 
+let dir_tab = Array.of_list (List.map Grid.get_dir [Up; Right ; Down ; Left])
+
+
+
 
 let print_ids l = 
     Printf.printf "[ ";
@@ -91,3 +97,24 @@ let shuffle_edges edges =
   List.map snd randomized
 
 let () = print_edges (genere_arretes 3 3)
+
+
+let get_walls node = 
+  let voisins_potentiels = List.map (fun v -> v -* (Node.get_id node)) (Grid.get_voisins 5 5 (Node.get_id node)) in
+  let voisins_connexes = List.map (fun v -> (Node.get_id v) -* (Node.get_id node)) (Node.get_connexions node) in
+  
+  let rec find l v =
+    match l with 
+    [] -> false
+    | p :: s -> if p=v then true else find s v
+  in
+  let rec walls directions connexions acc = 
+    match directions with 
+    [] -> acc
+    | d :: rest -> if find connexions d then walls rest connexions acc
+                  else walls rest connexions (d::acc)
+in walls voisins_potentiels voisins_connexes []
+
+
+
+let () = print_ids (get_walls (Node.cree_noeud (1,2) [Node.cree_noeud (2,2) []; Node.cree_noeud (1,3) []]  ) )

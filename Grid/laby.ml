@@ -466,10 +466,11 @@ let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = 
 let () = print_laby l
 *)
 
-
+(*
 let random_laby = generate_random_laby_fusion 6 3 (0,0) (2,2)
 let () = print_laby random_laby  
 let ()= print_laby (pledge_algo random_laby)
+*)
 (* 
 let random_laby = generate_random_laby_exploration 10 10 (0,0) (7,5)
 let ()= print_laby (pledge_algo random_laby)
