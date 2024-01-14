@@ -1,1 +1,1 @@
-val generate_html: laby->unit
+val generate_html : Laby.laby -> int -> string

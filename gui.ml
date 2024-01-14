@@ -101,7 +101,4 @@ in
 
 
 
-let generate_html laby size = Printf.printf "%s" ((html_header laby 20) ^ (html_body laby))
-
-let l = Laby.generate_random_laby_fusion 20 20 (0,0) (15,15)
-let () =  generate_html l 20
+let generate_html laby size = (html_header laby 20) ^ (html_body laby)
