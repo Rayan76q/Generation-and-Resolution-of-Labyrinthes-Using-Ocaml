@@ -2,6 +2,7 @@ type laby
 
 val cree_laby_plein : int -> int -> int*int -> int*int -> laby
 val cree_laby_vide : int -> int -> int*int -> int*int -> laby
+val cree_laby : int -> int -> int*int -> int*int ->Grid.grid -> laby
 
 val set_visite_case : laby->int*int->laby
 
