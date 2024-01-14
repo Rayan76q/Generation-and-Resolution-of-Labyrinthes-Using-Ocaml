@@ -20,6 +20,7 @@ val generate_random_laby_exploration : int->int->int*int->int*int->laby
 
 val resolve_cours :laby->laby
 
+val algo_main_droite : laby->laby
 val pledge_algo:laby->laby
 (*Getters*)
 val get_depart : laby -> int*int

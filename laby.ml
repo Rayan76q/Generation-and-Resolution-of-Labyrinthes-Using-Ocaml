@@ -241,134 +241,16 @@ let clean_path_laby laby lissst=
 ;;
 
 let resolve_cours laby =
-  let big_M=resolve_bis_cours laby (fst laby.depart) (snd laby.depart) (Grid.get_nodes laby.grille) [laby.depart] in
+  let big_M=resolve_bis_cours laby (fst laby.depart) (snd laby.depart) (Grid.get_nodes laby.grille) [] in
   let lab = reset_visits (snd ( fst big_M)) in
   
   (* print_laby lab; *)
-  (* List.iter (fun (x,y)-> Printf.printf"(%d,%d)" x y) (snd big_M);
-  Printf.printf("\n"); *)
+  List.iter (fun (x,y)-> Printf.printf"(%d,%d)" x y) (snd big_M);
+  Printf.printf("\n");
   clean_path_laby lab (snd big_M)
 ;;
 
 (* Algorithme de resolution de pledge *)
-let rec pledge_helper nnode x y i j acc directions laby=
-if acc=0 then
-  if (i,j)=laby.arrive then laby
-  else
-  match directions with
-    Grid.Right->
-      if j!=x && Node.sont_connecte nnode.(i).(j) nnode.(i).(j+1) &&  Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) then
-        let node_remplace= Node.set_visite nnode.(i).(j+1) (not (Node.est_visite nnode.(i).(j+1))) in
-        nnode.(i).(j+1)<-node_remplace;
-        pledge_helper nnode x y i (j+1) acc Grid.Right laby
-      else pledge_helper nnode x y i j (acc+1) Grid.Down laby
-    |Grid.Left->
-      if j!=0 && Node.sont_connecte nnode.(i).(j) nnode.(i).(j-1) &&  Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) then
-        let node_remplace= Node.set_visite nnode.(i).(j-1) (not (Node.est_visite nnode.(i).(j-1))) in
-        nnode.(i).(j-1)<-node_remplace;
-        pledge_helper nnode x y (i) (j-1) acc Grid.Down laby
-      else pledge_helper nnode x y i j (acc+1) Grid.Up laby
-    |Grid.Up->
-      if i!=0 && Node.sont_connecte nnode.(i).(j) nnode.(i-1).(j) &&  Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j) then
-        let node_remplace= Node.set_visite nnode.(i-1).(j) (not (Node.est_visite nnode.(i-1).(j))) in
-        nnode.(i-1).(j)<-node_remplace;
-        pledge_helper nnode x y (i-1) j acc Grid.Down laby
-      else pledge_helper nnode x y i j (acc+1) Grid.Right laby
-    |Grid.Down->
-      if i!=y && Node.sont_connecte nnode.(i).(j) nnode.(i+1).(j) &&  Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) then
-        let node_remplace= Node.set_visite nnode.(i+1).(j) (not (Node.est_visite nnode.(i+1).(j))) in
-        nnode.(i+1).(j)<-node_remplace;
-        pledge_helper nnode x y (i+1) j acc Grid.Down laby
-      else pledge_helper nnode x y i j (acc+1) Grid.Left laby
-else
-  match directions with 
-  Grid.Right->
-    begin
-      if  i=0 || ((Node.sont_connecte nnode.(i).(j) nnode.(i-1).(j) &&  Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j))=false) then 
-        if j!=x && Node.sont_connecte nnode.(i).(j) nnode.(i).(j+1) &&  Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) then
-          let node_remplace= Node.set_visite nnode.(i).(j+1) (not (Node.est_visite nnode.(i).(j+1))) in
-          nnode.(i).(j+1)<-node_remplace;
-          pledge_helper nnode x y i (j+1) acc Grid.Right laby
-        else pledge_helper nnode x y (i) j (acc+1) Grid.Down laby
-      else 
-        let node_remplace= Node.set_visite nnode.(i-1).(j) (not (Node.est_visite nnode.(i-1).(j))) in
-        nnode.(i-1).(j)<-node_remplace;
-        pledge_helper nnode x y (i-1) j (acc-1) Grid.Up laby
-      end
-  |Grid.Down->
-    begin
-      if  j=x || ((Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j))=false) then 
-        if i!=y && Node.sont_connecte nnode.(i).(j) nnode.(i+1).(j) &&  Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) then
-          let node_remplace= Node.set_visite nnode.(i+1).(j) (not (Node.est_visite nnode.(i+1).(j))) in
-          nnode.(i+1).(j)<-node_remplace;
-          pledge_helper nnode x y (i+1) j acc Grid.Down laby
-        else pledge_helper nnode x y i j (acc+1) Grid.Left laby
-      else 
-        let node_remplace= Node.set_visite nnode.(i).(j+1) (not (Node.est_visite nnode.(i).(j+1))) in
-        nnode.(i).(j+1)<-node_remplace;
-        pledge_helper nnode x y i (j+1) (acc-1) Grid.Right laby
-    end
-  |Grid.Up->
-    begin
-      if  j=0 || ((Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j))=false) then 
-        if i!=0 && Node.sont_connecte nnode.(i).(j) nnode.(i-1).(j) &&  Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j) then
-          let node_remplace= Node.set_visite nnode.(i-1).(j) (not (Node.est_visite nnode.(i-1).(j))) in
-          nnode.(i-1).(j)<-node_remplace;
-          pledge_helper nnode x y (i-1) j acc Grid.Down laby
-        else pledge_helper nnode x y i j (acc+1) Grid.Right laby
-      else 
-        let node_remplace= Node.set_visite nnode.(i).(j-1) (not (Node.est_visite nnode.(i).(j-1))) in
-        nnode.(i).(j-1)<-node_remplace;
-        pledge_helper nnode x y i (j-1) (acc-1) Grid.Left laby
-    end
-  |Grid.Left->
-    begin
-      if  i=y || ((Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j))=false) then 
-        if j!=x && Node.sont_connecte nnode.(i).(j) nnode.(i).(j-1) &&  Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) then
-          let node_remplace= Node.set_visite nnode.(i).(j-1) (not (Node.est_visite nnode.(i).(j-1))) in
-          nnode.(i).(j-1)<-node_remplace;
-          pledge_helper nnode x y (i) (j-1) acc Grid.Down laby
-        else pledge_helper nnode x y i j (acc+1) Grid.Up laby
-      else 
-        let node_remplace= Node.set_visite nnode.(i+1).(j) (not (Node.est_visite nnode.(i+1).(j))) in
-        nnode.(i+1).(j)<-node_remplace;
-        pledge_helper nnode x y (i+1) j (acc-1) Grid.Down laby
-    end
-;;
-
-let pledge_algo laby =
-  let nnode = Grid.get_nodes laby.grille in
-  let x = (Grid.get_length laby.grille)-1 in
-  let y = (Grid.get_width laby.grille)-1 in
-  let i = fst laby.depart in
-  let j =snd laby.depart in
-  let dire=
-    if j!=x && Node.sont_connecte nnode.(i).(j) nnode.(i).(j+1) &&  Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) then 
-      if  i=0 || ((Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j))=false) then
-        Grid.Right
-      else if j=0 ||((Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j))=false) then
-        Grid.Up
-      else if i=y ||((Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j))=false) then
-        Grid.Left
-      else 
-        Grid.Down
-    else if i!=0 && Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j) nnode.(i-1).(j) then
-      if j=0 ||((Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j))=false) then
-        Grid.Up
-      else if i=y ||((Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j))=false) then
-        Grid.Left
-      else Grid.Down
-    else if j!=0 && Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j) nnode.(i).(j-1) then
-        if i=y ||((Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j))=false) then
-          Grid.Left 
-        else 
-          Grid.Down
-    else 
-      Grid.Down
-  in
-  pledge_helper nnode y x (fst laby.depart) (snd laby.depart) 0 dire laby
-;;
-
 
 (*fonctions d'affichage*)
 let print_laby laby=
@@ -444,6 +326,125 @@ let print_laby laby=
 
       
 
+let rec main_droite_h nnode x y i j dir laby =
+  if (i,j)=laby.arrive then laby
+  else
+    match dir with
+    Grid.Right-> 
+      if j!=y && Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) then
+        if Node.est_visite nnode.(i).(j+1) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y i (j+1) Grid.Down laby
+        else 
+          let laby= set_visite_case laby (i,j+1) in
+          main_droite_h nnode x y i (j+1) Grid.Down laby
+      else if i!=x && Node.sont_connecte nnode.(i).(j) nnode.(i+1).(j) &&  Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) then
+        if Node.est_visite nnode.(i+1).(j) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y (i+1) (j) Grid.Right laby
+        else 
+          let laby = set_visite_case laby (i+1,j) in
+          main_droite_h nnode x y (i+1) (j) Grid.Right laby
+      else if j!=0 && Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j) nnode.(i).(j-1) then
+        if Node.est_visite nnode.(i).(j-1) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y i (j-1) Grid.Up laby
+        else 
+          let laby = set_visite_case laby (i,j-1) in
+          main_droite_h nnode x y i (j-1) Grid.Up laby
+      else 
+        let node_remplace2= Node.set_visite nnode.(i).(j) (not (Node.est_visite nnode.(i).(j))) in
+        nnode.(i).(j)<-node_remplace2;
+        main_droite_h nnode x y (i-1) (j) Grid.Left laby
+    |Grid.Up-> 
+      if i!=x && Node.sont_connecte nnode.(i).(j) nnode.(i+1).(j) &&  Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) then
+        if Node.est_visite nnode.(i+1).(j) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y (i+1) (j) Grid.Right laby
+        else 
+          let laby = set_visite_case laby (i+1,j) in
+          main_droite_h nnode x y (i+1) (j) Grid.Right laby
+      else if j!=0 && Node.sont_connecte nnode.(i).(j) nnode.(i).(j-1) &&  Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) then 
+        if Node.est_visite nnode.(i).(j-1) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y i (j-1) Grid.Up laby
+        else 
+          let laby = set_visite_case laby (i,j-1) in
+          main_droite_h nnode x y i (j-1) Grid.Up laby
+      else if i!=0 && Node.sont_connecte nnode.(i).(j) nnode.(i-1).(j) &&  Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j) then
+        if Node.est_visite nnode.(i-1).(j) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y (i-1) (j) Grid.Left laby
+        else 
+          let laby = set_visite_case laby (i-1,j) in
+          main_droite_h nnode x y (i-1) (j) Grid.Left laby
+      else 
+        let node_remplace2= Node.set_visite nnode.(i).(j) (not (Node.est_visite nnode.(i).(j))) in
+        nnode.(i).(j)<-node_remplace2;
+        main_droite_h nnode x y i (j+1) Grid.Down laby
+    |Grid.Left->
+      if j!=0 && Node.sont_connecte nnode.(i).(j) nnode.(i).(j-1) &&  Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j) then
+        if Node.est_visite nnode.(i).(j-1) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y i (j-1) Grid.Up laby
+        else 
+          let laby = set_visite_case laby (i,j-1) in
+          main_droite_h nnode x y i (j-1) Grid.Up laby
+      else if i!=0 && Node.sont_connecte nnode.(i).(j) nnode.(i-1).(j) &&  Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j) then
+        if Node.est_visite nnode.(i-1).(j) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y (i-1) (j) Grid.Left laby
+        else 
+          let laby = set_visite_case laby (i-1,j) in
+          main_droite_h nnode x y (i-1) (j) Grid.Left laby
+      else if j!=y && Node.sont_connecte nnode.(i).(j) nnode.(i).(j+1) &&  Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) then
+        if Node.est_visite nnode.(i).(j+1) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y i (j+1) Grid.Down laby
+        else 
+          let laby = set_visite_case laby (i,j+1) in
+          main_droite_h nnode x y i (j+1) Grid.Down laby
+      else 
+      let node_remplace2= Node.set_visite nnode.(i).(j) (not (Node.est_visite nnode.(i).(j))) in
+      nnode.(i).(j)<-node_remplace2;
+      main_droite_h nnode x y (i+1) (j) Grid.Right laby
+    |Grid.Down->
+      if i!=0 && Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j) nnode.(i-1).(j) then
+        if Node.est_visite nnode.(i-1).(j) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y (i-1) (j) Grid.Left laby
+        else 
+          let laby = set_visite_case laby (i-1,j) in
+          main_droite_h nnode x y (i-1) (j) Grid.Left laby
+      else if j!=y && Node.sont_connecte nnode.(i).(j) nnode.(i).(j+1) &&  Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) then 
+        if Node.est_visite nnode.(i).(j+1) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y i (j+1) Grid.Down laby
+        else 
+          let laby = set_visite_case laby (i,j+1) in
+          main_droite_h nnode x y i (j+1) Grid.Down laby
+      else if i!=x && Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j) nnode.(i+1).(j) then
+        if Node.est_visite nnode.(i+1).(j) then
+          let laby = set_visite_case laby (i,j) in
+          main_droite_h nnode x y (i+1) (j) Grid.Right laby
+        else 
+          let laby = set_visite_case laby (i+1,j) in
+          main_droite_h nnode x y (i+1) (j) Grid.Right laby
+      else 
+        let node_remplace2= Node.set_visite nnode.(i).(j) (not (Node.est_visite nnode.(i).(j))) in
+        nnode.(i).(j)<-node_remplace2;
+        main_droite_h nnode x y i (j-1) Grid.Up laby
+;;
+      
+let algo_main_droite laby=
+  let laby = set_visite_case laby (fst laby.depart,snd laby.depart) in
+  let x=Grid.get_length laby.grille in
+    let y=Grid.get_width laby.grille in
+      let nnode=Grid.get_nodes laby.grille in
+        main_droite_h nnode (x-1) (y-1) (fst laby.depart) (snd laby.depart) Grid.Right laby
+;;
+      
+
 (*TESTS D'Affichages
 let l = cree_laby_plein 10 10 (0,0) (5,5)
 let l = {depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = (Grid.supprime_mur l.grille (0,0) (0,1)) }
@@ -466,14 +467,14 @@ let l={depart = l.depart ; arrive = l.arrive ; position = l.position ; grille = 
 let () = print_laby l
 *)
 
-(*
-let random_laby = generate_random_laby_fusion 6 3 (0,0) (2,2)
+
+let random_laby = generate_random_laby_fusion 5 7 (0,6) (0,0)
 let () = print_laby random_laby  
-let ()= print_laby (pledge_algo random_laby)
-*)
-(* 
-let random_laby = generate_random_laby_exploration 10 10 (0,0) (7,5)
-let ()= print_laby (pledge_algo random_laby)
+let ()= print_laby (algo_main_droite random_laby)
+(*
+let random_laby = generate_random_laby_exploration 5 4 (0,0) (3,1)
+let l= resolve_cours random_laby 
+let () = print_laby (l) 
 
 let random_laby = generate_random_laby_exploration 50 50 (5,18) (31,42)
 let ()= print_laby (resolve_cours random_laby)
