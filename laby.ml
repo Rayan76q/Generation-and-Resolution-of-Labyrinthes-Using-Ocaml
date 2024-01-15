@@ -244,10 +244,7 @@ let resolve_cours laby =
   let big_M=resolve_bis_cours laby (fst laby.depart) (snd laby.depart) (Grid.get_nodes laby.grille) [] in
   let lab = reset_visits (snd ( fst big_M)) in
   
-  (* print_laby lab; *)
-  List.iter (fun (x,y)-> Printf.printf"(%d,%d)" x y) (snd big_M);
-  Printf.printf("\n");
-  clean_path_laby lab (snd big_M)
+  (clean_path_laby lab (snd big_M) , snd big_M)
 ;;
 
 (* Algorithme de resolution de pledge *)

@@ -5,7 +5,7 @@ let dir_tab = Array.of_list (List.map Grid.get_dir [Up; Right ; Down ; Left])
 
 
 
-let html_header laby size = {|<!DOCTYPE html>
+let html_header laby chemin size = let s= {|<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -26,16 +26,38 @@ let html_header laby size = {|<!DOCTYPE html>
         --nb_columns:|} ^ (string_of_int (Grid.get_width (Laby.get_grille laby))) ^
         {|;
       }
-    </style> 
-      
-  </head> |}
-
+    |}
+in
+  let delay = 200 in
+  let rec loop list d acc= 
+    match list with
+    []->acc
+    | (x,y) :: rest -> let s = string_of_int (x*(Grid.get_width (Laby.get_grille laby))+y) in
+      loop rest (d+100) (acc ^ "#c" ^ s ^{|{
+        animation: changeColor 1s ease forwards |} ^ (string_of_int d) ^ {|ms;
+        }
+        |}
+    ) 
+in 
+  (loop chemin delay s) ^ {|
+  @keyframes changeColor {
+    0% {
+        background-color: #3498db;
+    }
+    50% {
+        background-color: #ff9248;
+    }
+    100% {
+        background-color: #ff9248;
+    }
+}
+  </style> 
+</head> |}
 
 
 
 let html_body laby = 
 
-  
   let s =  {|<div id="window">
   <h1>Labyrinthe</h1>
   <div id="grid">|} in
@@ -78,7 +100,7 @@ in
         let s = (List.fold_left (fun a x -> a ^" " ^x^"Wall") s swalls) in
         let s = if (Laby.get_depart laby) = Node.get_id (Grid.get_nodes (Laby.get_grille laby)).(i).(j) then s ^ {| start"><div class="text">S</div></div>|}
                 else if (Laby.get_arrive laby) = Node.get_id (Grid.get_nodes (Laby.get_grille laby)).(i).(j) then s ^ {| end"><div class="text">E</div></div>|}
-                else if Node.est_visite (Grid.get_nodes (Laby.get_grille laby)).(i).(j) then s ^ {| visited"></div>|}
+                else if Node.est_visite (Grid.get_nodes (Laby.get_grille laby)).(i).(j) then s ^ {| " id="c|} ^ (string_of_int (i*Grid.get_width (Laby.get_grille laby)+j))^{|"></div>|}
                 else s ^ {|"></div>|}
           in loopj (j+1) s
       else
@@ -93,12 +115,12 @@ in
       s
   in
   let s = loopi 0 s in 
-  s ^ {|</div>
-  <button id="btn">Resoudre</button>
-  </div>
+  s ^ {|
   </body>
   </html>|}
 
+let generate_html laby path size = (html_header laby path size) ^ (html_body laby)
 
-
-let generate_html laby size = (html_header laby 20) ^ (html_body laby)
+let l = Laby.generate_random_laby_fusion 50 50 (0,0) (40,36) 
+let (l , path) = Laby.resolve_cours l 
+let () = Printf.printf "%s" (generate_html l path 20)

@@ -18,10 +18,10 @@ val generate_random_laby_fusion : int->int->int*int->int*int->laby
 
 val generate_random_laby_exploration : int->int->int*int->int*int->laby
 
-val resolve_cours :laby->laby
+val resolve_cours :laby-> laby * (int*int) list
+
 
 val algo_main_droite : laby->laby
-val pledge_algo:laby->laby
 (*Getters*)
 val get_depart : laby -> int*int
 val get_arrive : laby -> int*int

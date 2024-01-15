@@ -1,1 +1,1 @@
-val generate_html : Laby.laby -> int -> string
+val generate_html : Laby.laby -> (int * int) list -> int -> string
