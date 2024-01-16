@@ -5,6 +5,8 @@ type directions = Grid.directions
 
 let dir_tab = Array.of_list (List.map Grid.get_dir [Up; Right ; Down ; Left])
 let ( +* ) t1 t2 = (fst t1 + fst t2,snd t1 + snd t2) 
+let ( -* ) t1 t2 = (fst t1 - fst t2,snd t1 - snd t2) 
+
 
 
 type laby = {depart : int*int ; arrive : int*int ; position : int*int ; grille : grid}
@@ -432,11 +434,22 @@ let rec main_droite_h nnode x y i j dir laby =
         nnode.(i).(j)<-node_remplace2;
         main_droite_h nnode x y i (j-1) Grid.Up laby
 ;;
-      
+
+
 let algo_main_droite laby=
+  let convert_tuple_to_dir t =
+      match t with 
+      (0,1) -> Grid.Up
+      | (0,-1) ->Grid.Down
+      | (-1,0) -> Grid.Left
+      | (1,0) ->Grid.Right
+  in
   let laby = set_visite_case laby (fst laby.depart,snd laby.depart) in
   let x=Grid.get_length laby.grille in
     let y=Grid.get_width laby.grille in
       let nnode=Grid.get_nodes laby.grille in
-        main_droite_h nnode (x-1) (y-1) (fst laby.depart) (snd laby.depart) Grid.Right laby
+        let connexions = Node.get_connexions (nnode.(fst laby.depart).(snd laby.depart)) in
+        match connexions with 
+        voisin :: rest ->main_droite_h nnode (x-1) (y-1) (fst laby.depart) (snd laby.depart) (convert_tuple_to_dir ((Node.get_id nnode.(fst (Node.get_id voisin)).((snd (Node.get_id voisin)))) -* laby.depart )) laby
+        | [] -> failwith "Laby non résoluble."
 ;;
