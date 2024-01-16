@@ -119,4 +119,6 @@ let()=
   Laby.print_laby (Laby.construct_laby "test/fake6.laby");
   Laby.print_laby (Laby.construct_laby "test/fake7.laby");
   Laby.print_laby (Laby.construct_laby "test/fake8.laby");*)
-  Laby.print_laby (Laby.construct_laby "test/maze_21x32.laby");
+  Laby.print_laby (Laby.construct_laby "test/maze_21x32.laby")
+
+

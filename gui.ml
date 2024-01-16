@@ -21,9 +21,9 @@ let html_header laby chemin size = let s= {|<!DOCTYPE html>
       *{
         --s:|} ^ (string_of_int size) ^ 
         {|px;
-        --nb_rows:|} ^ (string_of_int (Grid.get_length (Laby.get_grille laby))) ^
+        --nb_rows:|} ^ (string_of_int (Grid.get_width (Laby.get_grille laby))) ^
         {|;
-        --nb_columns:|} ^ (string_of_int (Grid.get_width (Laby.get_grille laby))) ^
+        --nb_columns:|} ^ (string_of_int (Grid.get_length (Laby.get_grille laby))) ^
         {|;
       }
     |}
@@ -80,12 +80,12 @@ let html_body laby =
 in
   
 let tdir_to_string d = 
-  if d = (0,1) then "right"
+  if d = (0,1) then "down"
   else 
-    if d = (1,0) then "down"
+    if d = (1,0) then "right"
     else 
-      if d = (0,-1) then "left"
-      else if d = (-1,0) then "up"
+      if d = (0,-1) then "up"
+      else if d = (-1,0) then "left"
       else failwith "Tuple de directions incorrectes"
 in
   
@@ -93,20 +93,20 @@ in
   (*Suite du body*)
   let rec loopi i s= 
     let rec loopj j s= 
-      if j < Grid.get_width (Laby.get_grille laby) then 
+      if j < Grid.get_length(Laby.get_grille laby) then 
         let s = s ^ {|
       <div class="case|} in
-        let swalls = List.map tdir_to_string (get_walls (Grid.get_nodes (Laby.get_grille laby)).(i).(j)) in
+        let swalls = List.map tdir_to_string (get_walls (Grid.get_nodes (Laby.get_grille laby)).(j).(i)) in
         let s = (List.fold_left (fun a x -> a ^" " ^x^"Wall") s swalls) in
-        let s = if (Laby.get_depart laby) = Node.get_id (Grid.get_nodes (Laby.get_grille laby)).(i).(j) then s ^ {| start"><div class="text">S</div></div>|}
-                else if (Laby.get_arrive laby) = Node.get_id (Grid.get_nodes (Laby.get_grille laby)).(i).(j) then s ^ {| end"><div class="text">E</div></div>|}
-                else if Node.est_visite (Grid.get_nodes (Laby.get_grille laby)).(i).(j) then s ^ {| " id="c|} ^ (string_of_int (i*Grid.get_width (Laby.get_grille laby)+j))^{|"></div>|}
+        let s = if (Laby.get_depart laby) = Node.get_id (Grid.get_nodes (Laby.get_grille laby)).(j).(i) then s ^ {| start"><div class="text">S</div></div>|}
+                else if (Laby.get_arrive laby) = Node.get_id (Grid.get_nodes (Laby.get_grille laby)).(j).(i) then s ^ {| end"><div class="text">E</div></div>|}
+                else if Node.est_visite (Grid.get_nodes (Laby.get_grille laby)).(j).(i) then s ^ {| " id="c|} ^ (string_of_int (j*Grid.get_width (Laby.get_grille laby)+i))^{|"></div>|}
                 else s ^ {|"></div>|}
           in loopj (j+1) s
       else
         s 
     in
-    if i < Grid.get_length (Laby.get_grille laby) then 
+    if i < Grid.get_width (Laby.get_grille laby) then 
       begin
       let s = loopj 0 s in
       loopi (i+1) s

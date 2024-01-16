@@ -1,7 +1,5 @@
 (*Directions*)
-type node = Node.node
 type grid = Grid.grid
-type directions = Grid.directions
 
 let dir_tab = Array.of_list (List.map Grid.get_dir [Up; Right ; Down ; Left])
 let ( +* ) t1 t2 = (fst t1 + fst t2,snd t1 + snd t2) 

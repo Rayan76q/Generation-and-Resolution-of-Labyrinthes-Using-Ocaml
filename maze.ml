@@ -28,10 +28,10 @@ let rec choose_option () =
               close_out oc;
               let status = Sys.command "firefox random_laby.html" in if status = 1 then 
                 begin Printf.printf "Erreur lors de l'execution du navigateur.\n" ; choose_option () end else choose_option ()
-      |"3" -> Laby.print_laby (fst (Laby.resolve_cours laby)); choose_option ()
+      |"3" -> Laby.print_laby (fst (Laby.resolve_with_path laby)); choose_option ()
       |"4" ->  Printf.printf "Entrez la taille d'une case (en px): " ;
       let s = read_int () in
-        let (solved , path) = Laby.resolve_cours laby in 
+        let (solved , path) = Laby.resolve_with_path laby in 
         let oc = open_out "random_laby.html" in
               Printf.fprintf oc "%s" (Gui.generate_html solved path s);
               close_out oc;
@@ -56,7 +56,7 @@ let rec choose_option () =
       let dep_arrive = ((read_int () , read_int ()) , (read_int (),read_int ())) in
       Printf.printf "Entrez les dimensions du labyrinthe (e.g., 6 6 )\n";
       let len_width =(read_int () , read_int ()) in
-      let laby = Laby.generate_random_laby_fusion (fst len_width) (snd len_width) (fst dep_arrive) (snd dep_arrive) in
+      let laby = Laby.generate_random_laby_fusion (fst len_width) (snd len_width) (snd dep_arrive) (fst dep_arrive) in
       print_options ();
       action laby
   |"3" ->
@@ -64,7 +64,7 @@ let rec choose_option () =
       let dep_arrive = ((read_int () , read_int ()) , (read_int (),read_int ())) in
       Printf.printf "Entrez les dimensions du labyrinthe (e.g., 6 6 )\n";
       let len_width =(read_int () , read_int ()) in
-      let laby = Laby.generate_random_laby_exploration (fst len_width) (snd len_width) (fst dep_arrive) (snd dep_arrive) in
+      let laby = Laby.generate_random_laby_exploration (fst len_width) (snd len_width) (snd dep_arrive) (fst dep_arrive) in
       print_options ();
       action laby
   |"4" -> Printf.printf "Exiting...\n"
