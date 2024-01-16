@@ -111,14 +111,10 @@ let()=
 ;;
 
 let()=
-  (*Laby.print_laby (Laby.construct_laby "test/fake1.laby");
-  Laby.print_laby (Laby.construct_laby "test/fake2.laby");
-  Laby.print_laby (Laby.construct_laby "test/fake3.laby");
-  Laby.print_laby (Laby.construct_laby "test/fake4.laby");
-  Laby.print_laby (Laby.construct_laby "test/fake5.laby");
-  Laby.print_laby (Laby.construct_laby "test/fake6.laby");
-  Laby.print_laby (Laby.construct_laby "test/fake7.laby");
-  Laby.print_laby (Laby.construct_laby "test/fake8.laby");*)
-  Laby.print_laby (Laby.construct_laby "test/maze_21x32.laby")
-
-
+  Printf.printf "testing read_laby \n";
+  let fon_fake str =
+    try 
+      Laby.print_laby (Laby.construct_laby str)
+    with
+    | Failure msg -> Printf.printf "fake: %s\n" msg;
+  in List.iter fon_fake ["test/maze_11x6.laby";"test/maze_4x8.laby";"test/maze_4x9.laby";"test/maze_3x2.laby";"test/maze_6x12.laby";"test/fake1.laby";"test/fake2.laby";"test/fake3.laby";"test/fake4.laby";"test/fake5.laby";"test/fake6.laby";"test/fake7.laby";"test/fake9.laby";"test/fake10.laby"]
