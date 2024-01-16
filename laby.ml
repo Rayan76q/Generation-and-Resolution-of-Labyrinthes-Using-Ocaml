@@ -564,8 +564,8 @@ let check_laby string_array=
 let construct_laby f =
   let lines= read_file_lines f in
   let (edges , (s ,e)) = check_laby lines in
-  let n = ((Array.length lines - 1)/2 ) in
-  let m = (((String.length lines.(0))- 1)/2) in
+  let m = ((Array.length lines - 1)/2 ) in
+  let n = (((String.length lines.(0))- 1)/2) in
   if s = (-1,-1) || e = (-1,-1) then failwith "Départ ou arrivé non assigné."
   else
   cree_laby n m s e (Grid.cree_grid n m edges)

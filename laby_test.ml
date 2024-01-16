@@ -103,16 +103,16 @@ let()=
 ;;
 
 let()=
-  Printf.printf "labies pour tester read \n";
+  Printf.printf "labys pour tester read \n";
   Laby.print_laby ((Laby.generate_random_laby_exploration 23 50 (0,11) (22,18)));
   Laby.print_laby ((Laby.generate_random_laby_exploration 68 46 (0,45) (6,0)));
   Laby.print_laby ( (Laby.generate_random_laby_exploration 39 66 (0,45) (6,0)));
-  (* Laby.print_laby ( (Laby.generate_random_laby_exploration 20 20 (0,10) (3,0)));*)
+  Laby.print_laby ( (Laby.generate_random_laby_exploration 20 20 (0,10) (3,0)));
 ;;
 
 let()=
-  (*Laby.print_laby (Laby.construct_laby "test/fake1.laby");*)
-  (*Laby.print_laby (Laby.construct_laby "test/fake2.laby");
+  (*Laby.print_laby (Laby.construct_laby "test/fake1.laby");
+  Laby.print_laby (Laby.construct_laby "test/fake2.laby");
   Laby.print_laby (Laby.construct_laby "test/fake3.laby");
   Laby.print_laby (Laby.construct_laby "test/fake4.laby");
   Laby.print_laby (Laby.construct_laby "test/fake5.laby");
