@@ -18,7 +18,7 @@ val generate_random_laby_fusion : int->int->int*int->int*int->laby
 
 val generate_random_laby_exploration : int->int->int*int->int*int->laby
 
-val resolve_cours :laby-> laby * (int*int) list
+val resolve_with_path :laby-> laby * (int*int) list
 
 val construct_laby : string -> laby
 

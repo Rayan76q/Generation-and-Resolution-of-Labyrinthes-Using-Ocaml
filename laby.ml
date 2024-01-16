@@ -242,7 +242,7 @@ let clean_path_laby laby lissst=
   in loopp laby lissst
 ;;
 
-let resolve_cours laby =
+let resolve_with_path laby =
   let big_M=resolve_bis_cours laby (fst laby.depart) (snd laby.depart) (Grid.get_nodes laby.grille) [] in
   let lab = reset_visits (snd ( fst big_M)) in
   
@@ -443,6 +443,7 @@ let algo_main_droite laby=
       | (0,-1) ->Grid.Down
       | (-1,0) -> Grid.Left
       | (1,0) ->Grid.Right
+      |_-> failwith "pas besoin de ce cas mais on l'ajoute pour que le compilateur ne se plaint pas."
   in
   let laby = set_visite_case laby (fst laby.depart,snd laby.depart) in
   let x=Grid.get_length laby.grille in
@@ -569,4 +570,4 @@ let construct_laby f =
   else
   cree_laby n m s e (Grid.cree_grid n m edges)
 
-;; 
+;;

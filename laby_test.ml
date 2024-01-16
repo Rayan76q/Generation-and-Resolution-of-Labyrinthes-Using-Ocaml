@@ -57,21 +57,21 @@ let ()=
   Printf.printf "************************************************************** \n" ;
   Printf.printf "* resolution algo_resolve_with_path laby_exploration dim 5 4 * \n" ;
   Printf.printf "************************************************************** \n" ;
-  Laby.print_laby (fst (Laby.resolve_cours(Laby.generate_random_laby_exploration 5 4 (0,0) (3,1)) ) ) 
+  Laby.print_laby (fst (Laby.resolve_with_path(Laby.generate_random_laby_exploration 5 4 (0,0) (3,1)) ) ) 
 ;;
 
 let ()= 
-  Printf.printf "**************************************************************** \n" ;
-  Printf.printf "* resolution algo_resolve_with_path laby_exploration dim 50 50 * \n" ;
-  Printf.printf "**************************************************************** \n" ;
-  Laby.print_laby (fst (Laby.resolve_cours (Laby.generate_random_laby_exploration 50 50 (5,18) (31,42))))
+  Printf.printf "*********************************************************** \n" ;
+  Printf.printf "* resolution algo_resolve_with_path laby_fusion dim 50 50 * \n" ;
+  Printf.printf "*********************************************************** \n" ;
+  Laby.print_laby (fst (Laby.resolve_with_path (Laby.generate_random_laby_fusion 50 50 (5,18) (31,42))))
 ;;
 
 let ()=
   Printf.printf "********************************************************** \n" ;
   Printf.printf "* resolution algo_resolve_with_path laby_fusion dim 7 8  * \n" ;
   Printf.printf "********************************************************** \n" ;
-  Laby.print_laby (fst (Laby.resolve_cours (Laby.generate_random_laby_fusion 7 8 (4,4) (6,7))))
+  Laby.print_laby (fst (Laby.resolve_with_path (Laby.generate_random_laby_fusion 7 8 (4,4) (6,7))))
 ;;
 
 let ()= 
@@ -94,3 +94,29 @@ let ()=
   Printf.printf "********************************************************** \n" ;
   Laby.print_laby ( Laby.algo_main_droite (Laby.generate_random_laby_exploration 50 50 (49,49) (0,0)))
 ;;
+
+let()=
+  Printf.printf "********************************************************* \n" ;
+  Printf.printf "* resolution algo_main_droite laby_exploration dim 7 46 * \n" ;
+  Printf.printf "********************************************************* \n" ;
+  Laby.print_laby (Laby.algo_main_droite (Laby.generate_random_laby_exploration 7 46 (0,45) (6,0)))
+;;
+
+let()=
+  Printf.printf "labies pour tester read \n";
+  Laby.print_laby ((Laby.generate_random_laby_exploration 23 50 (0,11) (22,18)));
+  Laby.print_laby ((Laby.generate_random_laby_exploration 68 46 (0,45) (6,0)));
+  Laby.print_laby ( (Laby.generate_random_laby_exploration 39 66 (0,45) (6,0)));
+  (* Laby.print_laby ( (Laby.generate_random_laby_exploration 20 20 (0,10) (3,0)));*)
+;;
+
+let()=
+  (*Laby.print_laby (Laby.construct_laby "test/fake1.laby");*)
+  (*Laby.print_laby (Laby.construct_laby "test/fake2.laby");
+  Laby.print_laby (Laby.construct_laby "test/fake3.laby");
+  Laby.print_laby (Laby.construct_laby "test/fake4.laby");
+  Laby.print_laby (Laby.construct_laby "test/fake5.laby");
+  Laby.print_laby (Laby.construct_laby "test/fake6.laby");
+  Laby.print_laby (Laby.construct_laby "test/fake7.laby");
+  Laby.print_laby (Laby.construct_laby "test/fake8.laby");*)
+  Laby.print_laby (Laby.construct_laby "test/maze_21x32.laby");
