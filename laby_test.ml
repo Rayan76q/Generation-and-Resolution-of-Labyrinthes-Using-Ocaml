@@ -104,10 +104,6 @@ let()=
 
 let()=
   Printf.printf "labys pour tester read \n";
-  Laby.print_laby ((Laby.generate_random_laby_exploration 23 50 (0,11) (22,18)));
-  Laby.print_laby ((Laby.generate_random_laby_exploration 68 46 (0,45) (6,0)));
-  Laby.print_laby ( (Laby.generate_random_laby_exploration 39 66 (0,45) (6,0)));
-  Laby.print_laby ( (Laby.generate_random_laby_exploration 20 20 (0,10) (3,0)));
 ;;
 
 let()=
@@ -117,4 +113,4 @@ let()=
       Laby.print_laby (Laby.construct_laby str)
     with
     | Failure msg -> Printf.printf "fake: %s\n" msg;
-  in List.iter fon_fake ["test/maze_11x6.laby";"test/maze_4x8.laby";"test/maze_4x9.laby";"test/maze_3x2.laby";"test/maze_6x12.laby";"test/fake1.laby";"test/fake2.laby";"test/fake3.laby";"test/fake4.laby";"test/fake5.laby";"test/fake6.laby";"test/fake7.laby";"test/fake9.laby";"test/fake10.laby"]
+  in List.iter fon_fake ["test/maze_11x6.laby";"test/maze_4x8.laby";"test/maze_4x9.laby";"test/maze_3x2.laby";"test/maze_6x12.laby";"test/fake1.laby";"test/fake2.laby";"test/fake3.laby";"test/fake4.laby";"test/fake5.laby";"test/fake6.laby";"test/fake7.laby";"test/fake8.laby";"test/fake9.laby";"test/fake10.laby"]

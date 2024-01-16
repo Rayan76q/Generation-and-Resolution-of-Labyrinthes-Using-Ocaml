@@ -538,7 +538,9 @@ let check_line i current_char lines s e =
           |_->failwith "laby non integre"
       else 
         (edge, (start_pos, end_pos)) 
-    in  
+    in
+    if String.length lines.(i) != width then failwith "laby non integre"
+    else
       if i!=(Array.length lines)-1 && i mod 2 = 1 && lines.(i+1).[width-2] = ' ' then
           loop 0 current_char (false,false) (((width-1,i),(width-2,i+2))::[]) s e
       else
