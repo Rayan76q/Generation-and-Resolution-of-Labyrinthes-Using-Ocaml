@@ -20,6 +20,8 @@ val generate_random_laby_exploration : int->int->int*int->int*int->laby
 
 val resolve_cours :laby-> laby * (int*int) list
 
+val construct_laby : string -> laby
+
 
 val algo_main_droite : laby->laby
 (*Getters*)

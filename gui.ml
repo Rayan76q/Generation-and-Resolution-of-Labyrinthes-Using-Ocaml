@@ -120,7 +120,3 @@ in
   </html>|}
 
 let generate_html laby path size = (html_header laby path size) ^ (html_body laby)
-
-let l = Laby.generate_random_laby_fusion 50 50 (0,0) (40,36) 
-let (l , path) = Laby.resolve_cours l 
-let () = Printf.printf "%s" (generate_html l path 20)
