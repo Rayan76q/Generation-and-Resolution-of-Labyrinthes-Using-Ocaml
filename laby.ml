@@ -89,6 +89,7 @@ let set_arrive laby id =
 
 (*auxiliere pour la generation*)
 
+
 let print_matrix m n1 n2 = 
   let rec loopi i = 
         let rec loopj j=
