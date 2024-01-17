@@ -88,7 +88,7 @@ let set_arrive laby id =
 
 
 (*auxiliere pour la generation*)
-Random.init 10
+
 
 let print_matrix m n1 n2 = 
   let rec loopi i = 

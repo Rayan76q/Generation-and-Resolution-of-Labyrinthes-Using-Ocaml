@@ -286,7 +286,7 @@ Les plus grandes difficultes qu'on a fait face seraient dans les affichages. Un 
 - il fallait juste enlever un caractere ' ' dans une ligne du code, mais il fallait bien trouver cette ligne.
 - on a ajoute le string string_Node qui gere ce cas entierement
 - Quand on arrivait a la derniere ligne, on oubliait de toujours gere les cas ou le noeud est visite ou le noeud est la case start ou End, on avait juste a ajoute ces cas dans la partie derniere ligne.
-- On obtenait des schemas de la sorte: ![Image Alt Text](pics/image.png) 
+- On obtenait des schemas de la sorte:<br> ![Image Alt Text](pics/image.png) 
 ![Image Alt Text](pics/image2.png) <br>
 mais on a realise rapidement que ce bug provenait de `construct_laby`, donc il fallait que echanger m et n dans `construct_laby`.
 - En comparant la longueur et la largeur definient avec la longueur et la largeur dans le print, on a remarque qu'ils etait inverses, puis en comparant l'affichage avec des fichiers labys, on a remarque qu'en faite tout le laby etait inversee, a 90 degres. La solution donc etait d'echanger i et j un peu partout dans l'affichage. Exemple de comparaison entre laby du fichier et laby affichee erronnee. Voici un exemple de Rotation 90 degres (l'exemple qui nous a fait realise notre erreur) :<br>
@@ -294,9 +294,48 @@ mais on a realise rapidement que ce bug provenait de `construct_laby`, donc il f
 ![Image Alt Text](pics/image4.png)
 
 ## Description des Tests
-Pour les tests 
-#### Fichiers pour tester construit_laby
-On donne en premiers quelques bon labys pour voir si laby est capable de les lire et de les refaire et resoudre.<br>
+On utilisera la commande `bash filename.sh` pour ne pas oublier une ligne de commande lors de la compilation. D'ailleurs, on mets des points virgules a la fin de chaque ligne car sinon le caractere `'\r'` serait confondu avec les lignes de commande et donc la commande bash ne marcherait pas. C'est une faute reliee au differentes interpretations linux/windows des caracteres du fichier. le point virgule transforme alors `'\r'` en une commande unique qui donnera un message d'erreur `"command not found"` mais le reste sera bien executee.
+
+Passons aux tests.
+### node_test
+fichiers utilisees:
+- `node_test.ml`
+- `test_node.sh`<br>
+On test ici toutes les fonctions utiles aux Nodes, et la facon dont on check les test est avec la fonction `print_noeud` ou print les exceptions `Failure`.
+
+Le but est de tester si la creation, la modification du champ visite, l'ajout et la suppression de connexion se fait bien. 
+
+Node etant une structure de donnee assez simple, on a pas rencontre de bug et tout les tests ont passe. 
+
+### grille_test
+fichiers utilisees:
+- grille_test.ml
+- test_grid.sh <br>
+
+On test ici les fonctions utiles a la grille, la facon de verifier les tests est en affichant les noeuds de la grille a l'aide de la fonction `Node.print_noeud`.
+
+On test ici si la grille qu'on cree est bien implementee, si l'ajout d'un mur valide est bon, si la suppression d'un mur se passe comme voulu, si des grilles sont egales et a la fin si les voisins sont biens mis en place dans la grille.
+
+Encore une fois, vu que la structure est assez simple et qu'on a pas de fonctions qui implementent des algos difficiles, tout les tests ont bien passe du premier coup.
+
+### laby_test
+Il y a deux parties dans ce test. C'est le module le plus testee du projet, parce que le module laby implemente les algorithmes les plus durs. En plus, on a besoin de verifier beaucoup de cas speciaux vu que c'est une structure assez complexe.
+#### tester les algo de generations et de resolutions
+fichiers utilisees:
+- `laby_test.ml`
+- `test_laby.sh`
+
+On test dans la premiere section les algorithmes de generations de labys, les algorithmes de resolutions ainsi que de fonctions utiles comme `cree_laby_plein` , `cree_laby_vide`, etc.
+
+Pour ne pas avoir des labys random a chaque test, on a initialiser un nombre random et on a repete les tests avec celui-ci.
+
+On test les generations et les resolutions avec des cas extremes, par exemple avec des labys rectangulaire avec `'S'` et `'E'` aux extremites, avec `'S'` qui se met entre 3 murs au debut (test utile pour `algo_main_droite`), etc.
+
+On en fait plusieurs pour bien s'assurer que tout est bien implementer.
+
+
+#### Parti pour tester construit_laby
+Il manque encore les fonctions qui lisent des labys et qui les generent dont `construct_laby`. On donne en premiers quelques bon labys pour voir si laby est capable de les lire et de les refaire et resoudre.<br>
 On choisit expres des cases aux extremites pour 'S' et 'E' dans plusieurs labys, des labyrinthes rectangulaires pour verifier que le laby n'inverse pas width et length et des labys pas si grands pour pouvoir verifier qu'ils sont vraiment les memes que ceux des fichiers. On a ensuite mis des fake labys. On specifira chaque erreur dans la documentation chaque fake. Voici les noms des fichiers :
 - maze_11x6
 - maze_4x8
