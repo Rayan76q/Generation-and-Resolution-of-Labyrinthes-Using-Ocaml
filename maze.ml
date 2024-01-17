@@ -52,6 +52,8 @@ let rec choose_option () =
       print_options ();
       action laby
   |"2" ->
+      Printf.printf "Entrez la seed: \n";
+      Random.init (read_int ());
       Printf.printf "Entrez les coordonnes de depart et arrive (e.g., 1 1 5 5): \n";
       let dep_arrive = ((read_int () , read_int ()) , (read_int (),read_int ())) in
       Printf.printf "Entrez les dimensions du labyrinthe (e.g., 6 6 )\n";
@@ -60,6 +62,8 @@ let rec choose_option () =
       print_options ();
       action laby
   |"3" ->
+      Printf.printf "Entrez la seed: \n";
+      Random.init (read_int ());
       Printf.printf "Entrez les coordonnes de depart et arrive (e.g., 1 1 5 5):\n";
       let dep_arrive = ((read_int () , read_int ()) , (read_int (),read_int ())) in
       Printf.printf "Entrez les dimensions du labyrinthe (e.g., 6 6 )\n";
@@ -73,11 +77,11 @@ let rec choose_option () =
 
 let grf n m seed = 
   Random.init seed ;
-  Laby.generate_random_laby_fusion n m (Random.int m,Random.int n) (Random.int m,Random.int n)
+  Laby.generate_random_laby_fusion n m (Random.int n,Random.int m) (Random.int n,Random.int m)
 
 let gre n m seed = 
     Random.init seed ;
-    Laby.generate_random_laby_exploration n m (Random.int m,Random.int n) (Random.int m,Random.int n)
+    Laby.generate_random_laby_exploration n m (Random.int n,Random.int m) (Random.int n,Random.int m)
 
 
 let display_help () = 

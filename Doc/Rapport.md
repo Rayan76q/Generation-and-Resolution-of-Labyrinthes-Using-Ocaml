@@ -402,8 +402,3 @@ Petit aperçu du code liée au cases:
 
 Toujours pour la labyrinthe précédant cela donne:
 ![Image Alt Text](pics/Capture3.PNG)
-
-
-
-
-
