@@ -240,8 +240,21 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
             - On incremente notre compteur de murs supprimer
             - On se rappelle recursivement
 
-     l'idee avec cet algo c'est d'identifier chaque case d'un laby hermetiquement ferme puis apres suppression d'un mur de la grille, on set l'identifiant des cases qui sont devenu connexes au min des deux parties connexes precedentes que l'on vient de fusionner a l'aide d'une auxiliere.
-    On a donc a cote de notre laby une matrice qui au fur et a mesure de l'algo va tendre a devenir une matrice nulle et donc on retourne le laby associe. 
+        l'idee avec cet algo c'est d'identifier chaque case d'un laby hermetiquement ferme puis apres suppression d'un mur de la grille, on set l'identifiant des cases qui sont devenu connexes au min des deux parties connexes precedentes que l'on vient de fusionner a l'aide d'une auxiliere.
+        On a donc a cote de notre laby une matrice qui au fur et a mesure de l'algo va tendre a devenir une matrice nulle et donc on retourne le laby associe. 
+
+    - generate_random_laby_exploration : Le principe de cet algo est assez similaire à celui utiliser pour résoudre un laby.<br>
+    On se donne un laby plein avec toutes ces cases initialisé à non visité et une liste de noeuds visité initialisé à vide, puis:
+        - On choisit une case de manière aléatoire, on la marque à visité et on l'insere dans la liste.
+        - On regardes la listes de ses voisins avec lequels elle n'est pas connecté (présence d'un mur) puis:
+            - Si cette liste n'est pas vide, alors parmi ceux-ci:
+                - Si cette liste n'est pas vide alors on choisit un de ces voisins au hasard et on se rapelle récursivement.
+                - Sinon
+                    on dépile la dernière case visité et on relance l'algo à partir de là
+            - Sinon on renvoie le laby 
+
+    `Note : Les deux algos de génération ne sont pas équivalent:
+    le premier priviligie l'apparition "d'arborecense" (les chemins sont beaucoup plus en zig-zag), la ou le deuxième génère des labys avec des long chemins et très peu de bifurcation, les différences sont d'autant plus visible à mesure que les labys grandissent en taille. `
 
     - resolve_with_path : rends une paire de laby et une liste de coordonnees qui indique le bon chemin de s vers e (utile pour l'affichage html avec animation). 
     <br>Elle utilise en particulier plusieurs sous fonctions:
@@ -265,3 +278,95 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
 ### Stratégie de Test
 - [ ] Choix des cas de test
 - [ ] Résultats obtenus
+
+
+## Affichage Avancé
+
+Pour cette section on a decidé de partir sur de l'html principalement pour notre familiarté avec celui-ci. La principale contrainte avec ce choix est que l'on doit faire un sorte qu'un seul redirect shell ( > ) soit nécéssaire pour générer le résultat finale.
+
+### Gestion des éléments de style:
+
+ Pour cela on a décidé d'utiliser des variables dans un fichier `main.css` qui contient l'essentiel des éléements de style commun à toute les cases, cela permet d'énoremement factoriser le code ocaml qui genere l'html, voici un petit apreçu de `main.css`, avec l'élement contenant les cases du laby:
+```css
+#grid{
+    display: grid;
+    grid-template-columns: repeat(var(--nb_columns),1fr);
+    grid-template-rows: repeat(var(--nb_rows),1fr);
+    width: calc(var(--s)* var(--nb_columns));
+    height: calc(var(--s)*var(--nb_rows));
+    margin: auto ;
+    position: relative;
+    border: 2px solid black;
+}
+```
+- `--nb_columns` : nombre de colonnes
+- `nb_rows` : nombre de ligne
+- `--s` : taille d'une case en px (parametre spécifiable)
+
+Ainsi, pour obtenir nos style il suffit d'ajouter à l'entete du fichier html 
+```css
+    <style>
+        *{
+            --nb_columns : [val];
+            --nb_rows : [val];
+            --s: [val]px;
+        }
+    </style>
+```
+Avec ça il nous reste plus qu'a générer les élements html nécéssaire et styliser les cases visités pour une animation, il est aussi nécéssaire de faire celle-ci dans le fichier html car un calcul de delais est nécéssaire du moins selon la contrainte qu'on s'est imposé qui est d'écrire que dans un seul fichier.
+
+### Structure générale :
+
+En html, on représente notre laby avec un `div` englobant la grille appelé `#grid` , celui-ci est ensuite ramplis de `div` constituant les cases et ceux grace au style css ci-dessus. Un fois les cases placé correctement dans l'enceinte on va utiliser 4 classe `upWall`, `downWall` , `rightWall`, `leftWall` , dont voici un exemple:
+```css
+.upWall{
+    border-top: 1px solid black;
+}
+```
+
+A l'aide d'une auxilière qui étant donné le laby renvoie pour chaque noeud une liste de strings "up", "down", "left", "right" suivant si un mur est present à cette direction , couplé avec les classes précédente on a donc nos murs qui sont bien représenté.
+
+On a égalment 3 autres classes particulière `.start` , `.end` , `.visite` qui change la couleur de la case respectiviment en `vert` , `rouge` , `orange` et une classe `.text` pour styliser les eventuels caracteres.
+
+Ce qui nous donne :
+![Image Alt Text](pics/Capture2.PNG)
+
+### Animation
+
+Pour l'animation, il est déja essentiel d'identifier les cases qui vont subir les changements , et vu que chaque style sera légèrement différent (à cause des changements de delais) il est préférable d'utiliser les identifiants. Pour simplifier on va considérer ici l'identifiant d'une case comme étant égal à `i * longueur + j`, auquel on va ajouter une lettre au début (on a choisi c) pour que l'id soit valide.<br>
+Et donc pour toutes les cases avec `visite = true` on va les ajouter à la classe `visited` avec l'id correspondant.<br>
+On va maintenant définir une variable delais initialisé à 200ms et que l'on va incrémenter de 100ms au fur et à mésure que l'on parcours le chemin renvoyé par la fonction résolve (qui est dans le bon ordre). 
+
+Petit aperçu du code liée au cases:
+```css
+#c53{
+    animation: changeColor 1s ease forwards 300ms;
+    }
+#c54{
+    animation: changeColor 1s ease forwards 400ms;
+    }
+    .
+    .
+    .
+
+    @keyframes changeColor {
+    0% {
+        background-color: #3498db;
+    }
+    50% {
+        background-color: #ff9248;
+    }
+    100% {
+        background-color: #ff9248;
+    }
+    }
+```
+
+
+Toujours pour la labyrinthe précédant cela donne:
+![Image Alt Text](pics/Capture3.PNG)
+
+
+
+
+
