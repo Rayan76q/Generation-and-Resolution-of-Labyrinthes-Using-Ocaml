@@ -48,13 +48,6 @@ val est_resolu : laby -> bool
     @param laby Le labyrinthe à afficher. *)
 val print_laby : laby -> unit
 
-(** Supprime le mur entre les coordonnées [coords1] et [coords2] dans le labyrinthe [laby].
-    @param laby Le labyrinthe à modifier.
-    @param coords1 Les coordonnées du premier nœud.
-    @param coords2 Les coordonnées du deuxième nœud.
-    @return Le labyrinthe modifié. *)
-val delete_wall : laby -> (int*int) * (int*int) -> laby
-
 (** Génère un labyrinthe aléatoire par la méthode de fusion.
     @param length La longueur du labyrinthe.
     @param width La largeur du labyrinthe.

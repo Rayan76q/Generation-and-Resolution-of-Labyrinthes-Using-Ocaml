@@ -20,7 +20,7 @@ val coords_correctes : int * int -> int -> int -> bool
 (** Crée une nouvelle grille de dimensions [length] x [width] avec les murs à supprimer définis par la liste [edges].
     @param length La longueur de la grille.
     @param width La largeur de la grille.
-    @param edges La liste des murs représentés par des paires de coordonnées.
+    @param edges La liste des connexions représentés par des paires de coordonnées.
     @return La nouvelle grille créée. *)
 val cree_grid : int -> int -> ((int * int) * (int * int)) list -> grid
 
