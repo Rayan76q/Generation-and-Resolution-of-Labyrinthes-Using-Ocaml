@@ -257,8 +257,27 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
 
 ## Difficulté d'Implémentation
 
-- [ ] Analyse des problèmes rencontrés
-- [ ] Solutions adoptées
+Les plus grandes difficultes qu'on a fait face seraient dans les affichages. Un premier point a note est que si on voyait qu'un labyrinthe ne s'affichait pas comme voulu, on ne savait pas directement si cela venait de la fonction d'affichage elle meme ou des fonctions de constructions de laby. Deuxiemement, lors des tests pour les affichages, on a rencontre beaucoup de bugs. La plupart d'eux etaient des bugs avec des solutions rapides. Souvent, c'etait des cas qu'on devait avoir geree( la raison pour laquelle on a fait des tests sur ces cas) mais qu'on a finalement oublie d'implementer dans nos codes (faute humaine pas grave). D'autres bugs devaient plus de reflexions pour les resoudre. Nous allons detailler les bugs ainsi que les solutions adoptees pour les bugs rencontrees.
+
+## Affichage simple
+- bugs dans l'affichage simple:
+    -
+    - derniere barre | qu'on oubliait de print.
+    - affichage erronne a cause d'ajout de caractere ' ' (faute d'inattention).
+    - affichait "." au lieu de "S" ou "E".
+    - caractere 'S','E' qui ne s'affichait pas si S etait dans la derniere ligne.
+    - caractere "." au niveau des "+ +" (et non | |) qui ne s'affichait pas dans la derniere colonne.
+    - affichage simple ne marchait pas pour les labys construient par construct_laby (fonction qui construit un laby depuis un fichier text) car construct_laby vers la fin declarait width comme length et length comme width donc on obtenait des affichages avec dimensions incorrectes et des parties non-connexes (remplies de murs).
+    - transposition des coordonnees: vu qu'on a une fonction non recursive terminale sur deux termes i et j, on a echangeait les coordonnees i et j ce qui affichait le labyrinthe avec une rotation de 90 degres.
+- Solutions pour l'affichage simple :
+    - 
+    - Au lieu de print `"|%s" str` recursivement on print `"%s|" str` recursivement et on gere simplement la premiere barre "|" sans avoir besoin donc de conditions en plus
+    - il fallait juste enlever un caractere ' ' dans une ligne du code, mais il fallait bien trouver cette ligne.
+    - on a ajoute le string string_Node qui gere ce cas entierement
+    - Quand on arrivait a la derniere ligne, on oubliait de toujours gere les cas ou le noeud est visite ou le noeud est la case start ou End, on avait juste a ajoute ces cas dans la partie derniere ligne.
+    - On obtenait des schemas de la sorte: (*INSERT IMAGE*) <br>
+    mais on a realise rapidement que ce bug provenait de `construct_laby`, donc il fallait que echanger m et n dans `construct_laby`.
+    - En comparant la longueur et la largeur definient avec la longueur et la largeur dans le print, on a remarque qu'ils etait inverses, puis en comparant l'affichage avec des fichiers labys, on a remarque qu'en faite tout le laby etait inversee, a 90 degres. La solution donc etait d'echanger i et j un peu partout dans l'affichage. Exemple de comparaison entre laby du fichier et laby affichee erronnee.
 
 ## Description des Tests
 
