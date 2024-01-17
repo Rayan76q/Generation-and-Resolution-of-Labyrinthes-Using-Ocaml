@@ -1,26 +1,26 @@
 # Projet Labyrinthe en OCaml
 
-
 ### Binôme
-- Membre 1: Antoine El-Kassis
+- Membre 1: El-Kassis Antoine
 - Membre 2: Lalaoui Rayan
 
 ## Répartition du Travail
-Pour la repartition des taches , on a essayé de faire en sorte qu'elle soit la plus equitable possible sans que chacun ait a implemente du code pour chaque partie du projet (generation , resolution, affichage) ce aui revienderait a faire le projet deux fois. On s'est donc repartie les taches comme suit:
-- Rayan: 
-    - Implementation de la structure de base
-    - Generation
-    - affichage avance
-- Antoine: 
-    - Resolution 
-    - Lecture de Labyrinthe 
-    - affichage simple
+Pour la répartition des tâches, on a essayé de faire en sorte qu'elle soit la plus équitable possible sans que chacun ait à implémenter du code pour chaque partie du projet (génération, résolution, affichage), ce qui reviendrait à faire le projet deux fois. On s'est donc réparti les tâches comme suit :
+- Rayan :
+    - Implémentation de la structure de base
+    - Génération
+    - Affichage avancé
+- Antoine :
+    - Résolution
+    - Lecture de Labyrinthe
+    - Affichage simple
 
-Les taches "mineurs" tels que : l'ecriture de tests et les eventuelles debugging ont ete menees par l'un ou l'autre suivant les besoins du projet et des disponibilite de chacun. Cela nous a permit de developpe une meilleure comprehension du code de l'autre tout au long du projet.
+Les tâches "mineures" telles que l'écriture de tests et les éventuelles debuggings ont été menées par l'un ou l'autre suivant les besoins du projet et les disponibilités de chacun. Cela nous a permis de développer une meilleure compréhension du code de l'autre tout au long du projet.
 
-Cette repartition est aussi tres utile car elle limite les conflits de versions git etant donne que l'on a travaille sur des fichiers differents pour la grande partie du projet. Vers la fin ou il a fallut mieux nous coordonner dans les modifications apporte que ce soit a maze.ml ou aux differents fichiers pour rectifications avant le rendu finale.
+Cette répartition est aussi très utile car elle limite les conflits de versions Git étant donné que l'on a travaillé sur des fichiers différents pour la grande partie du projet. Vers la fin, où il a fallu mieux nous coordonner dans les modifications apportées que ce soit à maze.ml ou aux différents fichiers pour les rectifications avant le rendu final.
 
 ## Structure de Données
+
 
 
 ### Modèle du Labyrinthe
@@ -270,90 +270,88 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
 
 ## Difficulté d'Implémentation
 
-Les plus grandes difficultes qu'on a fait face seraient dans les affichages. Un premier point a note est que si on voyait qu'un labyrinthe ne s'affichait pas comme voulu, on ne savait pas directement si cela venait de la fonction d'affichage elle meme ou des fonctions de constructions de laby. Deuxiemement, lors des tests pour les affichages, on a rencontre beaucoup de bugs. La plupart d'eux etaient des bugs avec des solutions rapides. Souvent, c'etait des cas qu'on devait avoir geree( la raison pour laquelle on a fait des tests sur ces cas) mais qu'on a finalement oublie d'implementer dans nos codes (faute humaine pas grave). D'autres bugs devaient plus de reflexions pour les resoudre. Nous allons detailler les bugs ainsi que les solutions adoptees pour les bugs rencontrees.
+Les plus grandes difficultés auxquelles nous avons fait face se trouvaient dans les affichages. Un premier point à noter est que si nous constations qu'un labyrinthe ne s'affichait pas comme voulu, nous ne savions pas directement si cela venait de la fonction d'affichage elle-même ou des fonctions de construction de labyrinthe. Deuxièmement, lors des tests pour les affichages, nous avons rencontré beaucoup de bugs. La plupart d'entre eux étaient des bugs avec des solutions rapides. Souvent, c'étaient des cas que nous aurions dû avoir gérés (la raison pour laquelle nous avons effectué des tests sur ces cas), mais que nous avons finalement oublié d'implémenter dans nos codes (faute humaine pas grave). D'autres bugs nécessitaient plus de réflexions pour les résoudre. Nous allons détailler les bugs ainsi que les solutions adoptées pour les bugs rencontrés.
 
 ## Affichage simple
-### bugs dans l'affichage simple:
-- derniere barre | qu'on oubliait de print.
-- affichage erronne a cause d'ajout de caractere ' ' (faute d'inattention).
-- affichait "." au lieu de "S" ou "E".
-- caractere 'S','E' qui ne s'affichait pas si S etait dans la derniere ligne.
-- caractere "." au niveau des "+ +" (et non | |) qui ne s'affichait pas dans la derniere colonne.
-- affichage simple ne marchait pas pour les labys construient par construct_laby (fonction qui construit un laby depuis un fichier text) car construct_laby vers la fin declarait width comme length et length comme width donc on obtenait des affichages avec dimensions incorrectes et des parties non-connexes (remplies de murs).
-- transposition des coordonnees: vu qu'on a une fonction non recursive terminale sur deux termes i et j, on a echangeait les coordonnees i et j ce qui affichait le labyrinthe avec une rotation de 90 degres.
-### Solutions pour l'affichage simple :
-- Au lieu de print `"|%s" str` recursivement on print `"%s|" str` recursivement et on gere simplement la premiere barre "|" sans avoir besoin donc de conditions en plus
-- il fallait juste enlever un caractere ' ' dans une ligne du code, mais il fallait bien trouver cette ligne.
-- on a ajoute le string string_Node qui gere ce cas entierement
-- Quand on arrivait a la derniere ligne, on oubliait de toujours gere les cas ou le noeud est visite ou le noeud est la case start ou End, on avait juste a ajoute ces cas dans la partie derniere ligne.
-- On obtenait des schemas de la sorte:<br> ![Image Alt Text](pics/image.png) 
+### Bugs dans l'affichage simple:
+- Dernière barre | qu'on oubliait de print.
+- Affichage erroné à cause d'ajout de caractère ' ' (faute d'inattention).
+- Affichait "." au lieu de "S" ou "E".
+- Caractère 'S', 'E' qui ne s'affichait pas si S était dans la dernière ligne.
+- Caractère "." au niveau des "+ +" (et non | |) qui ne s'affichait pas dans la dernière colonne.
+- Affichage simple ne marchait pas pour les labys construits par construct_laby (fonction qui construit un laby depuis un fichier texte) car construct_laby vers la fin déclarait width comme length et length comme width donc on obtenait des affichages avec dimensions incorrectes et des parties non-connexes (remplies de murs).
+- Transposition des coordonnées: vu qu'on a une fonction non récursive terminale sur deux termes i et j, on a échangé les coordonnées i et j ce qui affichait le labyrinthe avec une rotation de 90 degrés.
+
+### Solutions pour l'affichage simple:
+- Au lieu de print `"|%s" str` récursivement on print `"%s|" str` récursivement et on gère simplement la première barre "|" sans avoir besoin donc de conditions en plus.
+- Il fallait juste enlever un caractère ' ' dans une ligne du code, mais il fallait bien trouver cette ligne.
+- On a ajouté le string string_Node qui gère ce cas entièrement.
+- Quand on arrivait à la dernière ligne, on oubliait de toujours gérer les cas où le nœud est visité ou le nœud est la case start ou end, on avait juste à ajouter ces cas dans la partie dernière ligne.
+- On obtenait des schémas de la sorte:<br> ![Image Alt Text](pics/image.png) 
 ![Image Alt Text](pics/image2.png) <br>
-mais on a realise rapidement que ce bug provenait de `construct_laby`, donc il fallait que echanger m et n dans `construct_laby`.
-- En comparant la longueur et la largeur definient avec la longueur et la largeur dans le print, on a remarque qu'ils etait inverses, puis en comparant l'affichage avec des fichiers labys, on a remarque qu'en faite tout le laby etait inversee, a 90 degres. La solution donc etait d'echanger i et j un peu partout dans l'affichage. Exemple de comparaison entre laby du fichier et laby affichee erronnee. Voici un exemple de Rotation 90 degres (l'exemple qui nous a fait realise notre erreur) :<br>
+mais on a réalisé rapidement que ce bug provenait de `construct_laby`, donc il fallait échanger m et n dans `construct_laby`.
+- En comparant la longueur et la largeur définies avec la longueur et la largeur dans le print, on a remarqué qu'ils étaient inversés, puis en comparant l'affichage avec des fichiers labys, on a remarqué qu'en fait tout le laby était inversé, à 90 degrés. La solution donc était d'échanger i et j un peu partout dans l'affichage. Exemple de comparaison entre laby du fichier et laby affichée erronée. Voici un exemple de Rotation 90 degrés (l'exemple qui nous a fait réaliser notre erreur) :<br>
 ![Image Alt Text](pics/image3.png)
 ![Image Alt Text](pics/image4.png)
 
 ## Description des Tests
-On utilisera la commande `bash filename.sh` pour ne pas oublier une ligne de commande lors de la compilation. D'ailleurs, on mets des points virgules a la fin de chaque ligne car sinon le caractere `'\r'` serait confondu avec les lignes de commande et donc la commande bash ne marcherait pas. C'est une faute reliee au differentes interpretations linux/windows des caracteres du fichier. le point virgule transforme alors `'\r'` en une commande unique qui donnera un message d'erreur `"command not found"` mais le reste sera bien executee.
+On utilisera la commande `bash filename.sh` pour ne pas oublier une ligne de commande lors de la compilation. D'ailleurs, on met des points virgules à la fin de chaque ligne car sinon le caractère `'\r'` serait confondu avec les lignes de commande et donc la commande bash ne marcherait pas. C'est une faute reliée aux différentes interprétations linux/windows des caractères du fichier. Le point virgule transforme alors `'\r'` en une commande unique qui donnera un message d'erreur `"command not found"` mais le reste sera bien exécuté.
 
 Passons aux tests.
 ### node_test
-fichiers utilisees:
+fichiers utilisés :
 - `node_test.ml`
 - `test_node.sh`<br>
-On test ici toutes les fonctions utiles aux Nodes, et la facon dont on check les test est avec la fonction `print_noeud` ou print les exceptions `Failure`.
+On teste ici toutes les fonctions utiles aux Nodes, et la façon dont on check les tests est avec la fonction `print_noeud` ou print les exceptions `Failure`.
 
-Le but est de tester si la creation, la modification du champ visite, l'ajout et la suppression de connexion se fait bien. 
+Le but est de tester si la création, la modification du champ visite, l'ajout et la suppression de connexion se fait bien.
 
-Node etant une structure de donnee assez simple, on a pas rencontre de bug et tout les tests ont passe. 
-
+Node étant une structure de données assez simple, on n'a pas rencontré de bug et tous les tests ont passé.
 ### grille_test
-fichiers utilisees:
+fichiers utilisés :
 - grille_test.ml
 - test_grid.sh <br>
 
-On test ici les fonctions utiles a la grille, la facon de verifier les tests est en affichant les noeuds de la grille a l'aide de la fonction `Node.print_noeud`.
+On teste ici les fonctions utiles à la grille, la façon de vérifier les tests est en affichant les nœuds de la grille à l'aide de la fonction `Node.print_noeud`.
 
-On test ici si la grille qu'on cree est bien implementee, si l'ajout d'un mur valide est bon, si la suppression d'un mur se passe comme voulu, si des grilles sont egales et a la fin si les voisins sont biens mis en place dans la grille.
+On teste ici si la grille qu'on crée est bien implémentée, si l'ajout d'un mur valide est bon, si la suppression d'un mur se passe comme voulu, si des grilles sont égales et à la fin si les voisins sont bien mis en place dans la grille.
 
-Encore une fois, vu que la structure est assez simple et qu'on a pas de fonctions qui implementent des algos difficiles, tout les tests ont bien passe du premier coup.
+Encore une fois, vu que la structure est assez simple et qu'on n'a pas de fonctions qui implémentent des algos difficiles, tous les tests ont bien passé du premier coup.
 
 ### laby_test
-Il y a deux parties dans ce test. C'est le module le plus testee du projet, parce que le module laby implemente les algorithmes les plus durs. En plus, on a besoin de verifier beaucoup de cas speciaux vu que c'est une structure assez complexe.
-#### tester les algo de generations et de resolutions
-fichiers utilisees:
+Il y a deux parties dans ce test. C'est le module le plus testé du projet, parce que le module laby implémente les algorithmes les plus durs. En plus, on a besoin de vérifier beaucoup de cas spéciaux vu que c'est une structure assez complexe.
+#### tester les algo de générations et de résolutions
+fichiers utilisés :
 - `laby_test.ml`
 - `test_laby.sh`
 
-On test dans la premiere section les algorithmes de generations de labys, les algorithmes de resolutions ainsi que de fonctions utiles comme `cree_laby_plein` , `cree_laby_vide`, etc.
+On teste dans la première section les algorithmes de générations de labys, les algorithmes de résolutions ainsi que des fonctions utiles comme `cree_laby_plein`, `cree_laby_vide`, etc.
 
-Pour ne pas avoir des labys random a chaque test, on a initialiser un nombre random et on a repete les tests avec celui-ci.
+Pour ne pas avoir des labys random à chaque test, on a initialisé un nombre random et on a répété les tests avec celui-ci.
 
-On test les generations et les resolutions avec des cas extremes, par exemple avec des labys rectangulaire avec `'S'` et `'E'` aux extremites, avec `'S'` qui se met entre 3 murs au debut (test utile pour `algo_main_droite`), etc.
+On teste les générations et les résolutions avec des cas extrêmes, par exemple avec des labyrinthes rectangulaires avec `'S'` et `'E'` aux extrémités, avec `'S'` qui se met entre 3 murs au début (test utile pour `algo_main_droite`), etc.
 
-On en fait plusieurs pour bien s'assurer que tout est bien implementer.
+On en fait plusieurs pour bien s'assurer que tout est bien implémenté.
 
-
-#### Parti pour tester construit_laby
-Il manque encore les fonctions qui lisent des labys et qui les generent dont `construct_laby`. On donne en premiers quelques bon labys pour voir si laby est capable de les lire et de les refaire et resoudre.<br>
-On choisit expres des cases aux extremites pour 'S' et 'E' dans plusieurs labys, des labyrinthes rectangulaires pour verifier que le laby n'inverse pas width et length et des labys pas si grands pour pouvoir verifier qu'ils sont vraiment les memes que ceux des fichiers. On a ensuite mis des fake labys. On specifira chaque erreur dans la documentation chaque fake. Voici les noms des fichiers :
+#### Parti pour tester construct_laby
+Il manque encore les fonctions qui lisent des labyrinthes et qui les génèrent, dont `construct_laby`. On donne en premier quelques bons labyrinthes pour voir si le labyrinthe est capable de les lire, de les refaire et de les résoudre.<br>
+On choisit exprès des cases aux extrémités pour 'S' et 'E' dans plusieurs labyrinthes, des labyrinthes rectangulaires pour vérifier que le labyrinthe n'inverse pas width et length, et des labyrinthes pas si grands pour pouvoir vérifier qu'ils sont vraiment les mêmes que ceux des fichiers. On a ensuite mis des faux labyrinthes. On spécifiera chaque erreur dans la documentation de chaque faux. Voici les noms des fichiers :
 - maze_11x6
 - maze_4x8
 - maze_4x9
 - maze_3x2
 - maze_6x12
 - maze_6x6
-- Fake1 a un + en moins a la toute fin
-- Fake2 a 'E' au mauvais endroit (en dessous d'un plus ligne un au lieu den dessous de -)
-- Fake3 a un + au lieu d'un | a la ligne 51 a la toute fin
-- Fake4 a deux caracteres 'S' au lieu d'un. Un au debut de la dernière ligne et un a la fin de la ligne au dessus pour s'assurer que es flags se transmettent bien.
+- Fake1 a un + en moins à la toute fin
+- Fake2 a 'E' au mauvais endroit (en dessous d'un plus ligne un au lieu de en dessous de -)
+- Fake3 a un + au lieu d'un | à la ligne 51 à la toute fin
+- Fake4 a deux caractères 'S' au lieu d'un. Un au début de la dernière ligne et un à la fin de la ligne au-dessus pour s'assurer que les flags se transmettent bien.
 - fake5 n'a pas de case 'E'
-- fake6 a un + manquant a la ligne 88 vers la fin
-- Fake7 a un | au mauvais endroit a la ligne 21
-- Fake8 a un | en moins a la ligne 2 (la taille de la ligne est donc plus petite que celle originale)
-- Fake9 a un + en moins a la ligne 71, remplacee par un un caractere ' '
+- fake6 a un + manquant à la ligne 88 vers la fin
+- Fake7 a un | au mauvais endroit à la ligne 21
+- Fake8 a un | en moins à la ligne 2 (la taille de la ligne est donc plus petite que celle originale)
+- Fake9 a un + en moins à la ligne 71, remplacé par un caractère ' '
 - Fake10 n'a pas de case 'S'
-
 
 
 ## Affichage Avancé
@@ -409,9 +407,9 @@ Ce qui nous donne :
 
 ### Animation
 
-Pour l'animation, il est déja essentiel d'identifier les cases qui vont subir les changements , et vu que chaque style sera légèrement différent (à cause des changements de delais) il est préférable d'utiliser les identifiants. Pour simplifier on va considérer ici l'identifiant d'une case comme étant égal à `i * longueur + j`, auquel on va ajouter une lettre au début (on a choisi c) pour que l'id soit valide.<br>
+Pour l'animation, il est déjà essentiel d'identifier les cases qui vont subir les changements, et vu que chaque style sera légèrement différent (à cause des changements de délais) il est préférable d'utiliser les identifiants. Pour simplifier on va considérer ici l'identifiant d'une case comme étant égal à `i * longueur + j`, auquel on va ajouter une lettre au début (on a choisi c) pour que l'id soit valide.<br>
 Et donc pour toutes les cases avec `visite = true` on va les ajouter à la classe `visited` avec l'id correspondant.<br>
-On va maintenant définir une variable delais initialisé à 200ms et que l'on va incrémenter de 100ms au fur et à mésure que l'on parcours le chemin renvoyé par la fonction résolve (qui est dans le bon ordre). 
+On va maintenant définir un variable délai initialisé à 200 ms et que l'on va incrémenter de 100 ms au fur et à mesure que l'on parcourt le chemin renvoyé par la fonction résolve (qui est dans le bon ordre).
 
 Petit aperçu du code liée au cases:
 ```css
