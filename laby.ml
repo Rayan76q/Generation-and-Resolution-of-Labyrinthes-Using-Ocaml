@@ -484,56 +484,56 @@ let read_file_lines filename =
 
 let check_line i current_char lines s e =
   let width = String.length lines.(0) in
-    let rec loop j c f edge start_pos end_pos=
+    let rec loop j c edge start_pos end_pos=
       if j<width-1 then
         if i=0 || i=(Array.length lines)-1 then 
           match c with
-          '+'-> if j mod 2=0 then loop (j+1) lines.(i).[j+1] f edge start_pos end_pos else failwith "laby non integre"
-          |'-'-> if j mod 2 =1 then loop (j+1) lines.(i).[j+1] f edge start_pos end_pos else failwith "laby non integre"
+          '+'-> if j mod 2=0 then loop (j+1) lines.(i).[j+1] edge start_pos end_pos else failwith "laby non integre"
+          |'-'-> if j mod 2 =1 then loop (j+1) lines.(i).[j+1] edge start_pos end_pos else failwith "laby non integre"
           |_->failwith "laby non integre"
         else
           if i mod 2 = 0 then
             match c with
-            '+'-> if j mod 2=0 then loop (j+1) lines.(i).[j+1] f edge start_pos end_pos  else failwith "laby non integre"
-            |'-'|' '-> if j mod 2 =1 then loop (j+1) lines.(i).[j+1] f edge start_pos end_pos else failwith "laby non integre"
+            '+'-> if j mod 2=0 then loop (j+1) lines.(i).[j+1] edge start_pos end_pos  else failwith "laby non integre"
+            |'-'|' '-> if j mod 2 =1 then loop (j+1) lines.(i).[j+1] edge start_pos end_pos else failwith "laby non integre"
             |_->failwith "laby non integre"
           else 
           match c with
-          '|'-> if j mod 2=0 then loop (j+1) lines.(i).[j+1] f edge start_pos end_pos else failwith "laby non integre"
+          '|'-> if j mod 2=0 then loop (j+1) lines.(i).[j+1]  edge start_pos end_pos else failwith "laby non integre"
           |' '->
               if j mod 2 = 1 then
                 if lines.(i).[j+1] = ' ' then
                   if lines.(i+1).[j] = ' ' then 
-                    loop (j+1) lines.(i).[j+1] f (((j,i),(j,i+2))::((j,i),(j+2,i))::edge) start_pos end_pos
-                  else loop (j+1) lines.(i).[j+1] f (((j,i),(j+2,i))::edge) start_pos end_pos
+                    loop (j+1) lines.(i).[j+1] (((j,i),(j,i+2))::((j,i),(j+2,i))::edge) start_pos end_pos
+                  else loop (j+1) lines.(i).[j+1] (((j,i),(j+2,i))::edge) start_pos end_pos
                 else 
                   if lines.(i+1).[j] = ' ' then 
-                    loop (j+1) lines.(i).[j+1] f (((j,i),(j,i+2))::edge) start_pos end_pos 
+                    loop (j+1) lines.(i).[j+1]  (((j,i),(j,i+2))::edge) start_pos end_pos 
                   else 
-                    loop (j+1) lines.(i).[j+1] f edge start_pos end_pos
+                    loop (j+1) lines.(i).[j+1]  edge start_pos end_pos
               else 
-                loop (j+1) lines.(i).[j+1] f edge start_pos end_pos
-          |'S'-> if j mod 2=1 && (fst f) = false then 
+                loop (j+1) lines.(i).[j+1]  edge start_pos end_pos
+          |'S'-> if j mod 2=1 && start_pos=(-1,-1) then 
             if lines.(i).[j+1] = ' ' then
               if lines.(i+1).[j] = ' ' then 
-                loop (j+1) lines.(i).[j+1] (true, snd f) (((j,i),(j,i+2))::((j,i),(j+2,i))::edge) (j,i) end_pos
-              else loop (j+1) lines.(i).[j+1] (true, snd f) (((j,i),(j+2,i))::edge) (j,i) end_pos
+                loop (j+1) lines.(i).[j+1] (((j,i),(j,i+2))::((j,i),(j+2,i))::edge) (j,i) end_pos
+              else loop (j+1) lines.(i).[j+1] (((j,i),(j+2,i))::edge) (j,i) end_pos
             else 
               if lines.(i+1).[j] = ' ' then 
-                loop (j+1) lines.(i).[j+1] (true, snd f) (((j,i),(j,i+2))::edge) (j,i) end_pos
-              else 
-                loop (j+1) lines.(i).[j+1] (true, snd f) edge (j,i) end_pos
+                loop (j+1) lines.(i).[j+1] (((j,i),(j,i+2))::edge) (j,i) end_pos
+              else
+                loop (j+1) lines.(i).[j+1] edge (j,i) end_pos
             else failwith "laby non integre"
-          |'E'->if j mod 2 = 1 && (snd f) = false then 
+          |'E'->if j mod 2 = 1 && end_pos=(-1,-1) then 
             if lines.(i).[j+1] = ' ' then
               if lines.(i+1).[j] = ' ' then 
-                loop (j+1) lines.(i).[j+1] (fst f, true) (((j,i),(j,i+2))::((j,i),(j+2,i))::edge) start_pos (j,i)
-              else loop (j+1) lines.(i).[j+1] (fst f, true) (((j,i),(j+2,i))::edge) start_pos (j,i)
+                loop (j+1) lines.(i).[j+1] (((j,i),(j,i+2))::((j,i),(j+2,i))::edge) start_pos (j,i)
+              else loop (j+1) lines.(i).[j+1] (((j,i),(j+2,i))::edge) start_pos (j,i)
             else 
               if lines.(i+1).[j] = ' ' then 
-                loop (j+1) lines.(i).[j+1] (fst f, true) (((j,i),(j,i+2))::edge)  start_pos (j,i)
+                loop (j+1) lines.(i).[j+1] (((j,i),(j,i+2))::edge)  start_pos (j,i)
               else 
-                loop (j+1) lines.(i).[j+1] (fst f, true) edge start_pos (j,i)
+                loop (j+1) lines.(i).[j+1] edge start_pos (j,i)
             else failwith "laby non integre"
           |_->failwith "laby non integre"
       else 
@@ -542,9 +542,9 @@ let check_line i current_char lines s e =
     if String.length lines.(i) != width then failwith "laby non integre"
     else
       if i!=(Array.length lines)-1 && i mod 2 = 1 && lines.(i+1).[width-2] = ' ' then
-          loop 0 current_char (false,false) (((width-1,i),(width-2,i+2))::[]) s e
+          loop 0 current_char  (((width-1,i),(width-2,i+2))::[]) s e
       else
-      loop 0 current_char (false,false) [] s e
+      loop 0 current_char  [] s e
 ;;
 
 let check_laby string_array=
