@@ -65,6 +65,8 @@ val generate_random_laby_fusion : int -> int -> int*int -> int*int -> laby
 val generate_random_laby_exploration : int -> int -> int*int -> int*int -> laby
 
 (** Résout le labyrinthe [laby] en renvoyant un couple composé du labyrinthe résolu et du chemin suivi (cf. TP4) .
+    N.B. cet algo donne plusieurs chemins si le labyrinthe en offre, 
+    on n'obtient donc pas la bonne complexite dans ces cas (cf. fin du mli).
     @param laby Le labyrinthe à résoudre.
     @return Un couple composé du labyrinthe résolu et du chemin suivi. *)
 val resolve_with_path : laby -> laby * (int*int) list
@@ -78,6 +80,19 @@ val construct_laby : string -> laby
     @param laby Le labyrinthe à résoudre.
     @return Le labyrinthe résolu. *)
 val algo_main_droite : laby -> laby
+
+
+(** Algorithme qui donne une liste de paires de toutes les configurations possibles pour start et end sur le rectangle
+   en enlevant les doublons.
+    @param m la première dimension du rectangle
+    @param n la deuxième dimension du rectangle
+    @return la liste *)
+val genere_tout_points : int -> int -> ((int*int)*(int*int)) list 
+
+(** Algo qui calcul la complexite du labyrinthe
+    @param laby labyrinthe
+    @return la complexite du labyrinthe*)
+val complexite_du_laby : laby -> float
 
 (** @return Les coordonnées de la case de départ du labyrinthe [laby].
     @param laby Le labyrinthe dont on veut obtenir les coordonnées de départ.

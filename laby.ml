@@ -571,3 +571,35 @@ let construct_laby f =
   cree_laby n m s e (Grid.cree_grid n m edges)
 
 ;;
+
+let create_2d_array m n =
+  Array.init m (fun i ->Array.init n (fun j -> (i, j)))
+;;
+
+let flatten_2d_array array =
+  let m = Array.length array in
+  let rec loopi i acc= 
+    if i = m then acc
+    else
+    loopi (i+1) (acc@(Array.to_list array.(i)))
+  in loopi 0 []
+;;
+let liste_co l=
+  let rec liste_coord liste acc= 
+    match liste with
+    []->acc
+    |first::l1->liste_coord l1 (List.fold_left (fun a x -> (x,first)::a ) acc l1 ) 
+  in liste_coord l []
+;;
+
+let genere_tout_points m n= liste_co(flatten_2d_array (create_2d_array m n))
+;;
+let complexite_du_laby lab=
+  let n= Grid.get_width lab.grille in
+    let m = Grid.get_length lab.grille in
+      let l = genere_tout_points m n in
+      let numerateur =List.fold_left (fun acc ((x,y),(w,z)) -> 
+        let laby = { depart= (x,y) ; arrive =(w,z) ;position = lab.position ;grille = lab.grille} in 
+        (float_of_int ( List.length ( snd (resolve_with_path laby) ) ) )/. ( float_of_int( (abs (x-w))+(abs(y-z)) ) ) +. acc
+      ) 0. l in numerateur /. (float_of_int(List.length l))
+;;

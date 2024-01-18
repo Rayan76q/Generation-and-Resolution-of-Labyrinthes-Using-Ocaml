@@ -213,6 +213,18 @@ On a été tenté de penser au début que la meilleure implémentation serait ce
         @param laby Le labyrinthe à résoudre.
         @return Le labyrinthe résolu. *)
     val algo_main_droite : laby -> laby
+
+    (** Algorithme qui donne une liste de paires de toutes les configurations possibles pour start et end sur le rectangle
+   en enlevant les doublons.
+    @param m la première dimension du rectangle
+    @param n la deuxième dimension du rectangle
+    @return la liste *)
+    val genere_tout_points : int -> int -> ((int*int)*(int*int)) list 
+
+    (** Algo qui calcul la complexite du labyrinthe
+    @param laby labyrinthe
+    @return la complexite du labyrinthe*)
+    val complexite_du_laby : laby -> float
     ```
     - cree_laby_plein : cree un laby ou chaque noeud a aucune connexion. Le resultat est un laby rempli de murs. Utile pour les algos de generations parce qu'on aura pas besoin de verifier la connexite a chaque iteration.
     - cree_laby_vide : cree un laby ou chaque noeud est connecte a tous ses voisins. Le resultat est un laby sans aucun mur (interne).
@@ -249,8 +261,8 @@ On a été tenté de penser au début que la meilleure implémentation serait ce
             - Sinon, on renvoie le labyrinthe. 
 
     `Note : Les deux algos de génération ne sont pas équivalents :
-    le premier privilégie l'apparition "d'arborescence" (les chemins sont beaucoup plus en zigzag), là où le deuxième génère des labyrinthes avec des longs chemins et très peu de bifurcation. Les différences sont d'autant plus visibles à mesure que les labyrinthes grandissent en taille.`
-
+    le premier privilégie l'apparition "d'arborescence" (les chemins sont beaucoup plus en zigzag), là où le deuxième génère des labyrinthes avec des longs chemins et très peu de bifurcation. Les différences sont d'autant plus visibles à mesure que les labyrinthes grandissent en taille.` <br>
+ Pour les algos de résolutions, il est important de noter qu'ils ne marchent pas ou ils donnent plusieurs chemins au lieu d'un si le labyrinthe en offre.
     - `resolve_with_path` : rend une paire de labyrinthe et une liste de coordonnées qui indique le bon chemin de la position de départ `S` vers la position d'arrivée `E` (utile pour l'affichage HTML avec animation).
     <br>Elle utilise en particulier plusieurs sous-fonctions :
         - Une fonction boucle qui itère sur les connexions d'un nœud sauf à une condition : s'il existe un chemin (sans back track) du nœud jusqu'à la sortie du labyrinthe. Cette fonction rend le même tuple que la deuxième fonction que nous allons présenter.
@@ -259,8 +271,11 @@ On a été tenté de penser au début que la meilleure implémentation serait ce
         - Une fonction `clean_path_laby` : qui rend un labyrinthe avec les cases de la bonne route visitées. (on fait reset visits puis cette fonction)
         - N.B : cet algo est linéaire au nombre de nœuds mais on peut baisser la complexité par un facteur constant en faisant par exemple reset et clean en même temps.
     - `algo_main_droite` : On a qu'à expliquer l'algo, la fonction est une implémentation directe de celui-ci. On pose notre main droite sur un mur et on traverse le labyrinthe sans le lâcher, on arrivera forcément à la sortie. Cet algorithme ne fonctionne que pour les labyrinthes définis tels que pour toutes deux cases, il existe un unique chemin entre celles-ci. On utilise du backtracking, où quand on revient sur nos pas, on `set_visite` les cases pour finir qu'avec le bon chemin. 
-    - N.B. : Cet algorithme est également linéaire en nombre de nœuds.
+        - N.B. : Cet algorithme est également linéaire en nombre de nœuds.
     - `construct_laby` : cette fonction lit un fichier, vérifie que c'est un labyrinthe valide, puis construit le labyrinthe à partir du fichier stocké dans une liste de chaînes de caractères qui représentent chaque ligne du fichier.
+    - `genere_tout_points` : Algorithme qui donne une liste de paires de toutes les configurations possibles pour start et end sur le rectangle en enlevant les doublons.
+    - `complexite_du_laby` : calcul en moyenne combien de pas doit-on faire plus que le nombre de pas minimum si le laby etait vide.
+        - N.B : cet algo ne donne pas la bonne complexite s'il y a plusieurs chemins.(notamment dans le cas d'un laby vide)
     
     
 
@@ -305,8 +320,8 @@ Le but est de tester si la création, la modification du champ visite, l'ajout e
 Node étant une structure de données assez simple, on n'a pas rencontré de bug et tous les tests ont passé.
 ### grille_test
 fichiers utilisés :
-- grille_test.ml
-- test_grid.sh <br>
+- `grille_test.ml`
+- `test_grid.sh` <br>
 
 On teste ici les fonctions utiles à la grille, la façon de vérifier les tests est en affichant les nœuds de la grille à l'aide de la fonction `Node.print_noeud`.
 
@@ -321,7 +336,7 @@ fichiers utilisés :
 - `laby_test.ml`
 - `test_laby.sh`
 
-On teste dans la première section les algorithmes de générations de labys, les algorithmes de résolutions ainsi que des fonctions utiles comme `cree_laby_plein`, `cree_laby_vide`, etc.
+On teste dans la première section l'affichage des algorithmes de générations de labys, les algorithmes de résolutions ainsi que des fonctions utiles comme `cree_laby_plein`, `cree_laby_vide`, etc.
 
 Pour ne pas avoir des labys random à chaque test, on a initialisé un nombre random et on a répété les tests avec celui-ci.
 

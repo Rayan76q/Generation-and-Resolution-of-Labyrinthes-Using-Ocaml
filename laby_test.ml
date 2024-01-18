@@ -103,10 +103,6 @@ let()=
 ;;
 
 let()=
-  Printf.printf "labys pour tester read \n";
-;;
-
-let()=
   Printf.printf "testing read_laby \n";
   let fon_fake str =
     try 
@@ -114,3 +110,14 @@ let()=
     with
     | Failure msg -> Printf.printf "fake: %s\n" msg;
   in List.iter fon_fake ["test/maze_11x6.laby";"test/maze_4x8.laby";"test/maze_4x9.laby";"test/maze_3x2.laby";"test/maze_6x12.laby";"test/fake1.laby";"test/fake2.laby";"test/fake3.laby";"test/fake4.laby";"test/fake5.laby";"test/fake6.laby";"test/fake7.laby";"test/fake8.laby";"test/fake9.laby";"test/fake10.laby"]
+;;
+
+let ()=
+  List.iter (fun (x,y)->(List.iter (fun ((a,b),(c,d))->Printf.printf "((%d,%d),(%d,%d))\n"a b c d) (Laby.genere_tout_points x y); Printf.printf "------------ \n")) [(4,3);(3,4);(2,3);(1,7);(7,2);(2,1);(3,2)]
+;;
+
+let ()=
+  let laby = Laby.generate_random_laby_fusion 10 8 (0,0) (9,7) in
+  Laby.print_laby laby;
+  Printf.printf "%f \n" (Laby.complexite_du_laby (laby));
+;;
