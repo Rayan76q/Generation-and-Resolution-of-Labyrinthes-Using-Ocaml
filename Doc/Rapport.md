@@ -21,11 +21,8 @@ Cette répartition est aussi très utile car elle limite les conflits de version
 
 ## Structure de Données
 
-
-
 ### Modèle du Labyrinthe
-on a etait tentee de penser au debut que la meilleure implementation serait celle de graphe "classique" i.e des noeuds representees par un identifiant et leurs listes de connexions, puis un type graphe qui serait une liste de noeuds. L'inconvenient majeur etait que l'on ne tire pas profit du faite que les cases d'un labyrinthe ont une position fixe et donc on pourrait acceder a n'importe quelle case a partir du type graphe sans avoir a parcourir l'integralite des connexions (on ajouterai un facteur lineaire a la complexite). Ceci nous a pousse a ajuster cette idee d'implementation. Dans un soucis de modularite nous avons 3 types qui permettent de representer nos labys.
-
+On a été tenté de penser au début que la meilleure implémentation serait celle du graphe "classique", c'est-à-dire des nœuds représentés par un identifiant et leurs listes de connexions, puis un type graphe qui serait une liste de nœuds. L'inconvénient majeur était que l'on ne tire pas profit du fait que les cases d'un labyrinthe ont une position fixe, et donc on pourrait accéder à n'importe quelle case à partir du type graphe sans avoir à parcourir l'intégralité des connexions (on ajouterait un facteur linéaire à la complexité). Ceci nous a poussés à ajuster cette idée d'implémentation. Dans un souci de modularité, nous avons 3 types qui permettent de représenter nos labyrinthes.
 ### Type Ocaml
 
 #### Node
@@ -37,7 +34,7 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
     - `connexions` : Une liste de nœuds avec lesquels il est connectés.
     - `visite` : Un booléen indiquant si le nœud a été visité ou pas.
 
-- Fonctions Associees:
+- Fonctions Associées:
     ```ocaml
     (** Indique si le nœud [node] a été visité.
         @param node Le nœud dont on veut vérifier l'état de visite.
@@ -84,9 +81,8 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
         @param node Le nœud à afficher. *)
     val print_noeud : node -> unit
     ```
-    la documentation se suffit a elle meme pour l'explication des fonctions.La majorite vont servir d'interface avec les types Grille et Laby.<br>
-    N'oublions pas les getters et les setters qui serviront dans la suite du projet
-
+    La documentation se suffit à elle-même pour l'explication des fonctions. La majorité vont servir d'interface avec les types Grille et Laby.<br>
+    N'oublions pas les getters et les setters qui serviront dans la suite du projet.
 #### Grille
 - TYPE:
     ```ocaml
@@ -132,10 +128,10 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
         @param grid La grille dont on veut obtenir la longueur.
         @return La longueur de la grille. *)
     ```
-    La documentation explique plus au moins les fonctions implementees.<br>
-    Quelques points a remarquer:
-    - Pour cree_grid, la fonction ignore les arretes qui ne sont pas correctes. (par exemple des connexions entre deux noeuds qui ne sont pas des voisins en soit) <br>
-    - Pour ajoute_mur et supprime_mur, ajouter un mur entre deux noeuds revient a supprime une connexion entre ceux-ci et supprime_mur ajoute un connexion entre ces deux noeuds.
+    La documentation explique plus ou moins les fonctions implémentées.<br>
+    Quelques points à remarquer :
+    - Pour `cree_grid`, la fonction ignore les arêtes qui ne sont pas correctes (par exemple, des connexions entre deux nœuds qui ne sont pas des voisins en soi). <br>
+    - Pour `ajoute_mur` et `supprime_mur`, ajouter un mur entre deux nœuds revient à supprimer une connexion entre ceux-ci, et `supprime_mur` ajoute une connexion entre ces deux nœuds.
 #### Laby
 - TYPE:
     ```ocaml
@@ -145,7 +141,7 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
     - `arrive` : Les coordonnées du point d'arrivée dans le labyrinthe.
     - `position` : Les coordonnées actuelles de la position dans le labyrinthe.
     - `grille` : La grille représentant la structure du labyrinthe.
-- Fonctions associees:
+- Fonctions associées:
     ```ocaml 
     (** Crée un labyrinthe avec tous les murs.
         @param length La longueur du labyrinthe.
@@ -228,43 +224,43 @@ on a etait tentee de penser au debut que la meilleure implementation serait cell
         - une qui print la premiere et la derniere ligne (les bords)
         - une autre qui print les ligne des noeuds (lignes de la forme |  |), qui sauvegarde l'affichage des connexions verticales dans un string est qui print le string une fois la ligne finit, puis passe a la deuxieme ligne. Notons qu'on gere la derniere ligne de noeuds a part. 
 
-    - generate_random_laby_fusion : On se donne:<br>
-    Une matrice d'identifiants tous unique (de 1 jusqu'a nm-1 ) qu'on appelera tag<br>
-    Une liste des arretes possibles dans un ordre aleatoire
-    On sait que pour obtenir un labyrinthe il faut supprimer nm-1 murs et donc
-    le fonctionnement de l'algo est le suivant:
-        - Si on a supprimer nm-1 murs alors on s'arrete et on renvoie le laby
+    - generate_random_laby_fusion : 
+    On se donne:<br>
+    Une matrice d'identifiants tous uniques (de 1 jusqu'à nm-1) qu'on appellera "tag".<br>
+    Une liste des arêtes possibles dans un ordre aléatoire.<br>
+    On sait que pour obtenir un labyrinthe, il faut supprimer nm-1 murs et donc le fonctionnement de l'algorithme est le suivant:
+        - Si on a supprimé nm-1 murs alors on s'arrête et on renvoie le laby.
         - Sinon <br>
-            - On prend le premier element de notre liste d'arretes (id1, id2) et on compare les tags associes aux noeuds i.e tag[id1] et tag[id2] de positions id1 et id2.
-            - On parcours tous le labyrinthe a partir du noeud a la position de max(tag[id1],tag[id2]) ,de proche en proche (donc que les noeuds attaignables a partir de notre position)  et mettant tous les tags des neouds parcourus a  min(tag[id1],tag[id2])
-            - On incremente notre compteur de murs supprimer
-            - On se rappelle recursivement
+            - On prend le premier élément de notre liste d'arêtes (id1, id2) et on compare les "tags" associés aux nœuds, c'est-à-dire tag[id1] et tag[id2], aux positions id1 et id2.
+            - On parcourt tout le labyrinthe à partir du nœud à la position de max(tag[id1], tag[id2]), de proche en proche (donc que les nœuds atteignables à partir de notre position), en mettant tous les "tags" des nœuds parcourus à min(tag[id1], tag[id2]).
+            - On incrémente notre compteur de murs supprimés.
+            - On se rappelle récursivement.
 
-        l'idee avec cet algo c'est d'identifier chaque case d'un laby hermetiquement ferme puis apres suppression d'un mur de la grille, on set l'identifiant des cases qui sont devenu connexes au min des deux parties connexes precedentes que l'on vient de fusionner a l'aide d'une auxiliere.
-        On a donc a cote de notre laby une matrice qui au fur et a mesure de l'algo va tendre a devenir une matrice nulle et donc on retourne le laby associe. 
+        L'idée avec cet algorithme, c'est d'identifier chaque case d'un laby hermétiquement fermé. Ensuite, après la suppression d'un mur de la grille, on fixe l'identifiant des cases qui sont devenues connexes au minimum des deux parties connexes précédentes que l'on vient de fusionner à l'aide d'une auxiliaire. On a donc à côté de notre laby une matrice qui, au fur et à mesure de l'algorithme, va tendre à devenir une matrice nulle, et donc on retourne le laby associé.
 
-    - generate_random_laby_exploration : Le principe de cet algo est assez similaire à celui utiliser pour résoudre un laby.<br>
-    On se donne un laby plein avec toutes ces cases initialisé à non visité et une liste de noeuds visité initialisé à vide, puis:
-        - On choisit une case de manière aléatoire, on la marque à visité et on l'insere dans la liste.
-        - On regardes la listes de ses voisins avec lequels elle n'est pas connecté (présence d'un mur) puis:
-            - Si cette liste n'est pas vide, alors parmi ceux-ci:
-                - Si cette liste n'est pas vide alors on choisit un de ces voisins au hasard et on se rapelle récursivement.
-                - Sinon
-                    on dépile la dernière case visité et on relance l'algo à partir de là
-            - Sinon on renvoie le laby 
+    - `generate_random_laby_exploration` : Le principe de cet algorithme est assez similaire à celui utilisé pour résoudre un labyrinthe.<br>
+    On se donne un labyrinthe plein avec toutes ses cases initialisées à non visitées et une liste de nœuds visités initialisée à vide, puis :
+        - On choisit une case de manière aléatoire, on la marque comme visitée et on l'insère dans la liste.
+        - On regarde la liste de ses voisins avec lesquels elle n'est pas connectée (présence d'un mur) puis :
+            - Si cette liste n'est pas vide, alors parmi ceux-ci :
+                - Si cette liste n'est pas vide, alors on choisit un de ces voisins au hasard et on se rappelle récursivement.
+                - Sinon,
+                    on dépile la dernière case visitée et on relance l'algorithme à partir de là.
+            - Sinon, on renvoie le labyrinthe. 
 
-    `Note : Les deux algos de génération ne sont pas équivalent:
-    le premier priviligie l'apparition "d'arborecense" (les chemins sont beaucoup plus en zig-zag), la ou le deuxième génère des labys avec des long chemins et très peu de bifurcation, les différences sont d'autant plus visible à mesure que les labys grandissent en taille. `
+    `Note : Les deux algos de génération ne sont pas équivalents :
+    le premier privilégie l'apparition "d'arborescence" (les chemins sont beaucoup plus en zigzag), là où le deuxième génère des labyrinthes avec des longs chemins et très peu de bifurcation. Les différences sont d'autant plus visibles à mesure que les labyrinthes grandissent en taille.`
 
-    - resolve_with_path : rends une paire de laby et une liste de coordonnees qui indique le bon chemin de s vers e (utile pour l'affichage html avec animation). 
-    <br>Elle utilise en particulier plusieurs sous fonctions:
-        - Une fonction boucle qui s'itere sur les connexions d'un noeud sauf a une condition: si il existe une route (sans back track) du noeud jusqu'a la sortie du laby. Cette fonction rends le meme tuple que la deuxieme fonction qu'on va presenter.
-        - Une fonction qui rend un tuple : un bool qui indique si le laby est resoluble en passant par une certaine route (qui sera vrai que pour la bonne route et qui est en faite la condition pour loop) et une paire de laby et bonne route.
-        - Une fonction reset_visits: qui prends un laby est pose tout les visites des noeuds a false
-        - Une fonction clean_path_laby : qui rend un laby avec les cases de la bonne route visitees. (on fait reset visits puis cette fonction)
-        - N.B: cet algo est lineaire au nombre de noeud mais on peut baisse la complexite par un facteur constant en faisant par exemple reset et clean en meme temps.
-    - algo_main_droite : On a qu'a expliquer l'algo, la fonction est une implementation directe de celui-ci. On pose notre main droite sur un mur et on traverse le labyrinthe sans le lacher, on arrivera forcement a la sortie. Cette algorithme marche que pour les labyrinthes definients tel que pour toutes deux cases, il existe un unique chemin entre celles-ci. On utilise du back-tracking, ou quand on revient sur nos pas, on `set_visite` les cases pour finir qu'avec le bon chemin. Cet algorithme est aussi lineaire en nombre de noeuds.
-    - construct_laby : cette fonction lis un fichier, verifie que c'est un labyrinthe valide, puis construit le labyrinthe a partir du fichier stockee dans une liste de strings qui representent chaque ligne du fichier.
+    - `resolve_with_path` : rend une paire de labyrinthe et une liste de coordonnées qui indique le bon chemin de la position de départ `S` vers la position d'arrivée `E` (utile pour l'affichage HTML avec animation).
+    <br>Elle utilise en particulier plusieurs sous-fonctions :
+        - Une fonction boucle qui itère sur les connexions d'un nœud sauf à une condition : s'il existe un chemin (sans back track) du nœud jusqu'à la sortie du labyrinthe. Cette fonction rend le même tuple que la deuxième fonction que nous allons présenter.
+        - Une fonction qui rend un tuple : un booléen qui indique si le labyrinthe est résoluble en passant par une certaine route (qui sera vrai que pour la bonne route et qui est en fait la condition pour loop) et une paire de labyrinthe et de bonne route.
+        - Une fonction `reset_visits` : qui prend un labyrinthe et met toutes les visites des nœuds à false.
+        - Une fonction `clean_path_laby` : qui rend un labyrinthe avec les cases de la bonne route visitées. (on fait reset visits puis cette fonction)
+        - N.B : cet algo est linéaire au nombre de nœuds mais on peut baisser la complexité par un facteur constant en faisant par exemple reset et clean en même temps.
+    - `algo_main_droite` : On a qu'à expliquer l'algo, la fonction est une implémentation directe de celui-ci. On pose notre main droite sur un mur et on traverse le labyrinthe sans le lâcher, on arrivera forcément à la sortie. Cet algorithme ne fonctionne que pour les labyrinthes définis tels que pour toutes deux cases, il existe un unique chemin entre celles-ci. On utilise du backtracking, où quand on revient sur nos pas, on `set_visite` les cases pour finir qu'avec le bon chemin. 
+    - N.B. : Cet algorithme est également linéaire en nombre de nœuds.
+    - `construct_laby` : cette fonction lit un fichier, vérifie que c'est un labyrinthe valide, puis construit le labyrinthe à partir du fichier stocké dans une liste de chaînes de caractères qui représentent chaque ligne du fichier.
     
     
 
