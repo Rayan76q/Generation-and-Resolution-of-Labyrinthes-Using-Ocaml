@@ -411,7 +411,7 @@ Pour l'animation, il est déjà essentiel d'identifier les cases qui vont subir 
 Et donc pour toutes les cases avec `visite = true` on va les ajouter à la classe `visited` avec l'id correspondant.<br>
 On va maintenant définir un variable délai initialisé à 200 ms et que l'on va incrémenter de 100 ms au fur et à mesure que l'on parcourt le chemin renvoyé par la fonction résolve (qui est dans le bon ordre).
 
-Petit aperçu du code liée au cases:
+Petit aperçu du code lié au cases:
 ```css
 #c53{
     animation: changeColor 1s ease forwards 300ms;
@@ -437,5 +437,5 @@ Petit aperçu du code liée au cases:
 ```
 
 
-Toujours pour la labyrinthe précédant cela donne:
+Toujours pour le labyrinthe précédant cela donne:
 ![Image Alt Text](pics/Capture3.PNG)
