@@ -77,7 +77,6 @@ let rec choose_option () =
     let laby = Laby.generate_random_laby_fusion 10 8 (0,0) (9,7) in 
       Laby.print_laby laby; 
       Printf.printf "%f \n" (Laby.complexite_du_laby (laby));
-
     Printf.printf "-------Laby2-------\n" ; 
     let llaby = Laby.generate_random_laby_fusion 15 12 (0,0) (9,7) in 
       Laby.print_laby llaby;
@@ -86,6 +85,7 @@ let rec choose_option () =
     let llaby = Laby.generate_random_laby_exploration 7 13 (0,0) (3,3) in 
       Laby.print_laby llaby;
       Printf.printf "%f \n" (Laby.complexite_du_laby (llaby));
+    choose_option();
   |"5" -> Printf.printf "Exiting...\n"
   |_ -> choose_option ()
 
