@@ -1,7 +1,7 @@
 type grille=Grid.grid
 type node = Node.node
 type laby= Laby.laby
-(* 
+
 let ()=
   let l = Laby.cree_laby_plein 10 10 (0,0) (5,5) in
   Printf.printf "******************************** \n";
@@ -120,7 +120,7 @@ let ()=
   let laby = Laby.generate_random_laby_fusion 10 8 (0,0) (9,7) in
   Laby.print_laby laby;
   Printf.printf "%f \n" (Laby.complexite_du_laby (laby));
-;; *)
+;;
 
 let ()=
   let m=3 in
@@ -132,4 +132,5 @@ let ()=
   Printf.printf "%d \n" (Grid.get_length (Laby.get_grille laby));
   Printf.printf "%d %d \n" (fst (Laby.get_position laby)) (snd (Laby.get_position laby));
   Laby.print_laby laby;
-  Laby.print_laby (Laby.algo_main_droite_factorise(Laby.generate_random_laby_fusion 5 4 (1,1) (4,3)));
+  Laby.print_laby (Laby.algo_main_droite(Laby.generate_random_laby_fusion 5 4 (4,3) (1,1)));
+;;
