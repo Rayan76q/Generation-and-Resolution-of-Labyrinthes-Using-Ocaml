@@ -3,16 +3,16 @@ let rec choose_option () =
   Printf.printf "1: Read a laby file\n";
   Printf.printf "2: Generate un Laby random (fusion)\n";
   Printf.printf "3: Generate un Laby random (exploration)\n";
-  Printf.printf "4: Montre 3 labys en affichage simple ainsi que leurs complexites\n";
-  Printf.printf "5: Exit\n";
+  Printf.printf "4: Exit\n";
   Printf.printf "> ";
 
     let print_options () = 
       Printf.printf "Options for the laby:\n";
-      Printf.printf "1: Print laby (simple)\n";
-      Printf.printf "2: Print laby (html)\n";
-      Printf.printf "3: Solve et print laby (simple)\n";
-      Printf.printf "4: Solve et print laby (html)\n";
+      Printf.printf "1: Print laby (simple):\n";
+      Printf.printf "2: Print laby (html):\n";
+      Printf.printf "3: Solve et print laby (simple):\n";
+      Printf.printf "4: Solve et print laby (html):\n";
+      Printf.printf "5: Print and show complexity:\n";
       Printf.printf "Any: Back to main menu\n";
       Printf.printf "> "
     in
@@ -38,6 +38,7 @@ let rec choose_option () =
               close_out oc;
               let status = Sys.command "firefox random_laby.html" in if status = 1 then 
                 begin Printf.printf "Erreur lors de l'execution du navigateur.\n" ; choose_option () end else choose_option ()
+      | "5" -> Laby.print_laby laby; Printf.printf "Complexite : %f\n" (Laby.complexite_du_laby laby) ;  choose_option ()
       |_ -> choose_option ()
       in ac
     in
@@ -72,21 +73,7 @@ let rec choose_option () =
       let laby = Laby.generate_random_laby_exploration (fst len_width) (snd len_width) (snd dep_arrive) (fst dep_arrive) in
       print_options ();
       action laby
-  |"4" -> 
-    Printf.printf "-------Laby1-------\n"; 
-    let laby = Laby.generate_random_laby_fusion 10 8 (0,0) (9,7) in 
-      Laby.print_laby laby; 
-      Printf.printf "%f \n" (Laby.complexite_du_laby (laby));
-    Printf.printf "-------Laby2-------\n" ; 
-    let llaby = Laby.generate_random_laby_fusion 15 12 (0,0) (9,7) in 
-      Laby.print_laby llaby;
-      Printf.printf "%f \n" (Laby.complexite_du_laby (llaby));
-    Printf.printf "-------Laby3-------\n" ; 
-    let llaby = Laby.generate_random_laby_exploration 7 13 (0,0) (3,3) in 
-      Laby.print_laby llaby;
-      Printf.printf "%f \n" (Laby.complexite_du_laby (llaby));
-    choose_option();
-  |"5" -> Printf.printf "Exiting...\n"
+  |"4" -> Printf.printf "Exiting...\n"
   |_ -> choose_option ()
 
 
