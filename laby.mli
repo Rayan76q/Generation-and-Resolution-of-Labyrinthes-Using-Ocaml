@@ -81,6 +81,7 @@ val construct_laby : string -> laby
     @return Le labyrinthe résolu. *)
 val algo_main_droite : laby -> laby
 
+val algo_main_droite_factorise : laby-> laby
 
 (** Algorithme qui donne une liste de paires de toutes les configurations possibles pour start et end sur le rectangle
    en enlevant les doublons.

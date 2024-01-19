@@ -433,6 +433,55 @@ let rec main_droite_h nnode x y i j dir laby =
         main_droite_h nnode x y i (j-1) Grid.Up laby
 ;;
 
+let algo_main_droite_factorise laby =
+  let nnode = Grid.get_nodes laby.grille in
+  let x = (Grid.get_length laby.grille)-1 in
+  let y= (Grid.get_width laby.grille)-1 in
+  let move_dir dir=
+    match dir with
+    0-> (1,0) (*droite*)
+    |1-> (0,-1) (*haut*)
+    |2->(-1,0) (*gauche*)
+    |3->(0,1) (*bas*)
+    |_-> failwith "direction diverged"
+  in
+    let check_no_wall dire (i,j)=
+      match dire with
+      0->i!=x && Node.sont_connecte nnode.(i+1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j) nnode.(i+1).(j)
+      |1->j!=0 && Node.sont_connecte nnode.(i).(j) nnode.(i).(j-1) &&  Node.sont_connecte nnode.(i).(j-1) nnode.(i).(j)
+      |2->i!=0 && Node.sont_connecte nnode.(i-1).(j) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j) nnode.(i-1).(j)
+      |3->j!=y && Node.sont_connecte nnode.(i).(j+1) nnode.(i).(j) &&  Node.sont_connecte nnode.(i).(j) nnode.(i).(j+1)
+      |_-> failwith "direction diverged"
+    in
+      let rec helper dir labs=
+      let labs = set_visite_case labs (labs.position) in
+      print_laby labs;
+        if labs.position = labs.arrive then labs
+        else
+          if check_no_wall ((dir+3) mod 4) labs.position then 
+            let labs = {depart = labs.depart; arrive = labs.arrive; position=(labs.position +* (move_dir ((dir +3) mod 4))); grille=labs.grille} in
+            helper ((dir+3) mod 4) labs;
+          else if check_no_wall (dir) labs.position then 
+            let labs = {depart = labs.depart; arrive = labs.arrive; position=(labs.position +*(move_dir (dir)));grille=labs.grille} in
+            helper (dir) labs;
+          else let labs = set_visite_case labs (labs.position) in
+            helper ((dir+1) mod 4) labs;
+      in
+    let voisin = 
+      let connexions = Node.get_connexions (nnode.(fst laby.depart).(snd laby.depart)) in
+        match connexions with 
+        a:: rest ->a
+        | [] -> failwith "Laby non résoluble.";
+      in
+      let t =(Node.get_id nnode.(fst (Node.get_id voisin)).((snd (Node.get_id voisin)))) -* laby.depart 
+  in
+    match t with
+      (0,1) -> helper 3 laby
+      | (0,-1) ->helper 1 laby
+      | (-1,0) -> helper 2 laby
+      | (1,0) ->helper 0 laby
+      |_ -> failwith "pas besoin de ce cas mais on l'ajoute pour que le compilateur ne se plaint pas."; 
+;;
 
 let algo_main_droite laby=
   let convert_tuple_to_dir t =
