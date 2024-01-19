@@ -1,19 +1,19 @@
 let rec choose_option () =
-  Printf.printf "Choose an option:\n";
-  Printf.printf "1: Read a laby file\n";
-  Printf.printf "2: Generate un Laby random (fusion)\n";
-  Printf.printf "3: Generate un Laby random (exploration)\n";
+  Printf.printf "Choisissez une option:\n";
+  Printf.printf "1: Lire un fichier laby\n";
+  Printf.printf "2: Générer un laby random (fusion)\n";
+  Printf.printf "3: Générer un laby random (exploration)\n";
   Printf.printf "4: Exit\n";
   Printf.printf "> ";
 
     let print_options () = 
-      Printf.printf "Options for the laby:\n";
+      Printf.printf "Que souhaitez-vous faire ?\n";
       Printf.printf "1: Print laby (simple):\n";
       Printf.printf "2: Print laby (html):\n";
       Printf.printf "3: Solve et print laby (simple):\n";
       Printf.printf "4: Solve et print laby (html):\n";
-      Printf.printf "5: Print and show complexity:\n";
-      Printf.printf "Any: Back to main menu\n";
+      Printf.printf "5: Print et calculer la compléxité:\n";
+      Printf.printf "Any: Retour vers le menu principale\n";
       Printf.printf "> "
     in
 
@@ -44,33 +44,31 @@ let rec choose_option () =
     in
 
   
+    let menu_genere ()= Printf.printf "Entrez la seed: \n";
+    Random.init (read_int ());
+    Printf.printf "Entrez les coordonnes de depart et arrive (e.g., 1 1 5 5): \n";
+    let dep_arrive = ((read_int () , read_int ()) , (read_int (),read_int ())) in
+    Printf.printf "Entrez les dimensions du labyrinthe (e.g., 6 6 )\n";
+    let len_width =(read_int () , read_int ()) in
+    (dep_arrive , len_width)
+    in  
   let option = read_line () in
   match option with
   "1" ->
-      Printf.printf "Write path to the file:\n";
+      Printf.printf "Ecrivez le chemin vers le fichier:\n";
       Printf.printf "> ";
       let file_name = read_line () in
       let laby = Laby.construct_laby file_name in
       print_options ();
       action laby
   |"2" ->
-      Printf.printf "Entrez la seed: \n";
-      Random.init (read_int ());
-      Printf.printf "Entrez les coordonnes de depart et arrive (e.g., 1 1 5 5): \n";
-      let dep_arrive = ((read_int () , read_int ()) , (read_int (),read_int ())) in
-      Printf.printf "Entrez les dimensions du labyrinthe (e.g., 6 6 )\n";
-      let len_width =(read_int () , read_int ()) in
-      let laby = Laby.generate_random_laby_fusion (fst len_width) (snd len_width) (snd dep_arrive) (fst dep_arrive) in
+      let ((s,e) , (n,m)) = menu_genere () in
+      let laby = Laby.generate_random_laby_fusion n m s e in
       print_options ();
       action laby
   |"3" ->
-      Printf.printf "Entrez la seed: \n";
-      Random.init (read_int ());
-      Printf.printf "Entrez les coordonnes de depart et arrive (e.g., 1 1 5 5):\n";
-      let dep_arrive = ((read_int () , read_int ()) , (read_int (),read_int ())) in
-      Printf.printf "Entrez les dimensions du labyrinthe (e.g., 6 6 )\n";
-      let len_width =(read_int () , read_int ()) in
-      let laby = Laby.generate_random_laby_exploration (fst len_width) (snd len_width) (snd dep_arrive) (fst dep_arrive) in
+    let ((s,e) , (n,m)) = menu_genere () in
+      let laby = Laby.generate_random_laby_exploration n m s e in
       print_options ();
       action laby
   |"4" -> Printf.printf "Exiting...\n"
@@ -87,48 +85,59 @@ let gre n m seed =
 
 
 let display_help () = 
-  Printf.printf {|Manuel d'aide: 
-  -Les commandes sont de la forme: ./maze.exe <command> --(option cmd) --(option d'affichage) [liste de parametres obligatoire] 
-
+  Printf.printf "Manuel d'aide: \n
+  -Les commandes sont de la forme:\n
+  \027[33m./maze.exe <command> --(option cmd) --(option d'affichage) [liste de parametres obligatoire] \027[0m
+  \n
   Si aucune commande n'est spécifié un menu interactif sera lancé.
-
+  \n
   Dans ce qui suit, src désigne un chemin vers un fichier valide.
+  \n
+  Les commandes: \n
+      \027[32m --help\027[0m : Affiche le manuel.\n
+      1)\027[32m print\027[0m : Affiche un labyrinthe à partir d'un fichier \n
 
-  Les commandes: 
-      --help : Affiche le manuel.
-      1)print : Affiche un labyrinthe à partir d'un fichier 
+        \027[33msyn: print --option src\027[0m
+        \n
+        \027[31moptions\027[0m (similaire à option2 pour les autres commandes): \n
+                  --simple : (par défault) affiche dans le terminale.\n
+                  --html : affiche dans le terminale le doc html associé au fichier à rediriger avec > vers un fichier\n
+                  \n
+      2)\027[32m random\027[0m  : Générer un Labyrinthe random en utilisant l'algo spécifié dans option1 avec l'afichage d'option2.\n
 
-        syn: print --option src
+      \027[33msyn: random --option1 --option2 longueur largeur seed\027[0m
+        \n
+          \027[31moption1\027[0m: --fusion: (Par défault) utilise l'algorithme fusion.\n
+                   --exploration: utilise l'algorithme d'explroation.\n
+          \027[31moption2\027[0m: --simple et --html  \n
+          \n
+      3)\027[32m solve\027[0m : Resoud un labyrinthe contenu dans un fichier passé en parametres avec l'algorithme spécifié.\n
 
-        options (similaire à option2 pour les autres commandes): 
-                  --simple : (par défault) affiche dans le terminale.
-                  --html : affiche dans le terminale le doc html associé au fichier à rediriger avec > vers un fichier
-      
-      2)random : Générer un Labyrinthe random en utilisant l'algo spécifié dans option1 avec l'afichage d'option2.
+      \027[33msyn: solve --option1 --option2 src \027[0m
 
-        syn: random --option1 --option2 longueur largeur seed
+          \027[31moption1\027[0m: --exploration: (Par défault) utilise l'algorithme d'explroation.\n
+                   --pledge (main droite): utilise l'algorithme de la main droite.\n
+          \027[31moption2\027[0m: --simple et --html  \n
+          \n
+          note: l'affichage html utilise l'algorthime d'exploration \n
+            la commande: solve --pledge --html est donc invalide.\n
 
-          option1: --fusion: (Par défault) utilise l'algorithme fusion.
-                   --exploration: utilise l'algorithme d'explroation.
-          option2: --simple et --html  
+        \n
+        3)\027[32m calc\027[0m : Affiche un labyrinthe lu à partir d'un fichier et calcul sa compléxité.\n
 
-      3)solve : resoud un labyrinthe contenu dans un fichier passé en parametres avec l'algorithme spécifié.
-
-        syn: solve --option1 --option2 src
-
-          option1: --exploration: (Par défault) utilise l'algorithme d'explroation.
-                   --pledge (main droite): utilise l'algorithme.
-          option2: --simple et --html  
-          
-          note: l'affichage html utilise l'algorthime d'exploration 
-            la commande: solve --pledge --html est donc invalide.
-  |}
+        \027[33msyn: calc --option src \027[0m
+  
+            \027[31moption1\027[0m: --simple: (Par défault) affichage simple.\n
+            \n
+            
+  "
 
 let main ()=
     match Array.to_list Sys.argv with
     [_ ; "--help"] -> display_help ()
     | [_ ; "print" ; fichier]  | [_ ; "print" ;"--simple";fichier] -> Laby.print_laby (Laby.construct_laby fichier)
     | [_ ; "print" ; "--html" ; fichier] -> Printf.printf "%s" (Gui.generate_html (Laby.construct_laby fichier) [] 25)
+    | [_ ; "calc" ; fichier ] |  [_ ; "calc"; "--simple" ; fichier ] -> let l = (Laby.construct_laby fichier) in Laby.print_laby l ; Printf.printf "Complexité : %f\n" (Laby.complexite_du_laby l)
     | [_ ; "random"; n ; m ; seed] | [_ ; "random"; "--fusion" ; n ; m ; seed] | [_ ; "random"; "--fusion" ; "simple"; n ; m ; seed] | [_ ; "random"; "--simple" ; n ; m ; seed]  ->  Laby.print_laby (grf (int_of_string(n)) (int_of_string(m)) (int_of_string(seed)))
     | [_ ; "random"; "--exploration" ;  n ; m ; seed] | [_ ; "random"; "--exploration" ;"--simple";  n ; m ; seed] -> Laby.print_laby (grf (int_of_string(n)) (int_of_string(m)) (int_of_string(seed)))
     | [_ ; "random"; "--html" ;n ; m ; seed] | [_ ; "random";"--fusion" ;"--html"; n ; m ; seed] ->  Printf.printf "%s" (Gui.generate_html (grf (int_of_string(n)) (int_of_string(m)) (int_of_string(seed))) [] 25)
