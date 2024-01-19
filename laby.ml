@@ -495,7 +495,7 @@ let construct_laby f =
   cree_laby n m s e (Grid.cree_grid n m edges)
 
 ;;
-
+(***********STATISTIQUES*************)
 let create_2d_array m n =
   Array.init m (fun i ->Array.init n (fun j -> (i, j)))
 ;;
@@ -518,12 +518,13 @@ let liste_co l=
 
 let genere_tout_points m n= liste_co(flatten_2d_array (create_2d_array m n))
 ;;
+
 let complexite_du_laby lab=
   let n= Grid.get_width lab.grille in
     let m = Grid.get_length lab.grille in
       let l = genere_tout_points m n in
-      let numerateur =List.fold_left (fun acc ((x,y),(w,z)) -> 
+      let num =List.fold_left (fun acc ((x,y),(w,z)) -> 
         let laby = { depart= (x,y) ; arrive =(w,z) ;position = lab.position ;grille = lab.grille} in 
-        (float_of_int ( List.length ( snd (resolve_with_path laby) ) ) )/. ( float_of_int( (abs (x-w))+(abs(y-z)) ) ) +. acc
-      ) 0. l in numerateur /. (float_of_int(List.length l))
+          let labyy= reset_visits laby in ((float_of_int ( (List.length ( snd (resolve_with_path labyy)))-1)) /. ( float_of_int( (abs (x-w))+(abs(y-z)) )) ) +. acc
+      ) (0.) l in (num) /. (float_of_int (List.length l))
 ;;

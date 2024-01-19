@@ -57,7 +57,10 @@ let ()=
   Printf.printf "************************************************************** \n" ;
   Printf.printf "* resolution algo_resolve_with_path laby_exploration dim 5 4 * \n" ;
   Printf.printf "************************************************************** \n" ;
-  Laby.print_laby (fst (Laby.resolve_with_path(Laby.generate_random_laby_exploration 5 4 (0,0) (3,1)) ) ) 
+  let m=Laby.resolve_with_path(Laby.generate_random_laby_exploration 5 4 (0,0) (3,1)) in
+  Laby.print_laby (fst  m );
+  List.iter (fun (x,y)-> Printf.printf "(%d,%d) " x y) (snd m);
+  Printf.printf "\n" 
 ;;
 
 let ()= 
@@ -71,7 +74,10 @@ let ()=
   Printf.printf "********************************************************** \n" ;
   Printf.printf "* resolution algo_resolve_with_path laby_fusion dim 7 8  * \n" ;
   Printf.printf "********************************************************** \n" ;
-  Laby.print_laby (fst (Laby.resolve_with_path (Laby.generate_random_laby_fusion 7 8 (4,4) (6,7))))
+  let m=Laby.resolve_with_path(Laby.generate_random_laby_fusion 7 8 (4,4) (6,7)) in
+  Laby.print_laby (fst  m );
+  List.iter (fun (x,y)-> Printf.printf "(%d,%d) " x y) (snd m);
+  Printf.printf "\n" 
 ;;
 
 let ()= 
@@ -134,3 +140,9 @@ let ()=
   Laby.print_laby laby;
   Laby.print_laby (Laby.algo_main_droite(Laby.generate_random_laby_fusion 5 4 (4,3) (1,1)));
 ;;
+
+let ()=
+  let laby = Laby.generate_random_laby_fusion 6 6 (1,1) (5,5) in
+  let laby2 = Laby.cree_laby 6 6 (1,1) (5,5) (Laby.get_grille laby) in
+  Laby.print_laby (fst (Laby.resolve_with_path laby2));
+  Laby.print_laby laby;
