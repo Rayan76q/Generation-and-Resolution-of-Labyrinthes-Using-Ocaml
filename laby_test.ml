@@ -146,3 +146,9 @@ let ()=
   let laby2 = Laby.cree_laby 6 6 (1,1) (5,5) (Laby.get_grille laby) in
   Laby.print_laby (fst (Laby.resolve_with_path laby2));
   Laby.print_laby laby;
+;;
+
+let ()=
+  List.iter (fun (x,y)->Printf.printf "(%d,%d)" x y) (snd (Laby.resolve_with_path (Laby.construct_laby "test/maze_6x6.laby"))); 
+  Printf.printf "%f \n" (Laby.complexite_du_laby (Laby.construct_laby "test/maze_6x6.laby"));
+;;
